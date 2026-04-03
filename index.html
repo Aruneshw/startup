@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Team Zero Gravity</title>
+    <meta
+      name="description"
+      content="Team Zero Gravity is a student startup from Tamil Nadu building AI-powered systems, autonomous hardware, and intelligent software."
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="./supabase-config.js" defer></script>
+    <script src="./nav.js" defer></script>
+    <script src="./animations.js" defer></script>
+    <script src="./auth.js" defer></script>
+    <script src="./visitor-counter.js" defer></script>
+    <script src="./particles.js" defer></script>
+  </head>
+  <body>
+    <div id="site-nav"></div>
+
+    <main>
+      <section class="hero reveal">
+        <canvas id="hero-particles" aria-hidden="true"></canvas>
+        <div class="container hero-content">
+          <div class="logo-badge logo-badge-large hero-logo-shell">
+            <img class="hero-logo" src="./LOGO.png" alt="Team Zero Gravity logo" />
+          </div>
+          <span class="eyebrow">Engineering Students Collective · Tamil Nadu, India</span>
+          <h1 class="hero-title hero-title-brand"><span>ZERO GRAVITY</span></h1>
+          <p class="hero-copy">
+            We build AI-powered systems, autonomous hardware, and intelligent
+            software — from concept to deployment.
+          </p>
+          <p class="hero-support">
+            Started in April 2026 at BIT Sathy, we work across cybersecurity,
+            robotics, embedded systems, IoT, and full-stack product builds.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="./projects.html">Explore Our Work</a>
+            <a class="ghost-button" href="./contact.html">Get In Touch</a>
+          </div>
+        </div>
+        <div class="scroll-indicator" aria-hidden="true">
+          <span class="scroll-arrow"></span>
+          <span>Scroll</span>
+        </div>
+      </section>
+
+      <section class="stats-bar reveal">
+        <div class="container">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-icon">⚡</span>
+              <div class="stat-copy-block">
+                <span class="stat-value">
+                  <span class="stat-number" data-count="6">0</span>
+                  <span class="stat-copy">Core Members</span>
+                </span>
+                <span class="stat-label">Team Strength</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <span class="stat-icon">🏆</span>
+              <div class="stat-copy-block">
+                <span class="stat-value">
+                  <span class="stat-number" data-count="3" data-after="+">0+</span>
+                  <span class="stat-copy">Hackathons</span>
+                </span>
+                <span class="stat-label">Competition Builds</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <span class="stat-icon">🚀</span>
+              <div class="stat-copy-block">
+                <span class="stat-value">
+                  <span class="stat-number" data-count="3">0</span>
+                  <span class="stat-copy">Live Projects</span>
+                </span>
+                <span class="stat-label">Systems Shipped</span>
+              </div>
+            </div>
+            <div class="stat-item">
+              <span class="stat-icon">🌐</span>
+              <div class="stat-copy-block">
+                <span class="stat-value">
+                  <span class="stat-number" data-count="2">0</span>
+                  <span class="stat-copy">National Finals</span>
+                </span>
+                <span class="stat-label">Event Recognition</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="container split-layout">
+          <div>
+            <span class="section-label">// ABOUT US</span>
+            <h2 class="section-heading">A team that builds, breaks, and ships.</h2>
+            <p class="lead">
+              Team Zero Gravity is a cross-disciplinary student collective of
+              engineering students from BIT Sathy, Tamil Nadu. We work at the
+              intersection of AI, hardware, cybersecurity, and embedded systems
+              — building real solutions to real problems.
+            </p>
+            <a class="inline-link" href="./about.html">Our Full Story →</a>
+          </div>
+          <div class="icon-stack">
+            <article class="icon-card card-hover">
+              <span class="icon-emoji">🤖</span>
+              <div>
+                <h3 class="card-title">AI-First Mindset</h3>
+                <p class="card-copy">
+                  Intelligent systems thinking shapes everything from model
+                  design to deployment.
+                </p>
+              </div>
+            </article>
+            <article class="icon-card card-hover">
+              <span class="icon-emoji">🔧</span>
+              <div>
+                <h3 class="card-title">Hardware Roots</h3>
+                <p class="card-copy">
+                  We design with physical constraints in mind, not just perfect
+                  lab conditions.
+                </p>
+              </div>
+            </article>
+            <article class="icon-card card-hover">
+              <span class="icon-emoji">🛡️</span>
+              <div>
+                <h3 class="card-title">Security-Conscious</h3>
+                <p class="card-copy">
+                  Every system is built to be resilient, trustworthy, and safe
+                  by design.
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-label">What We Do</span>
+            <h2 class="section-heading">Engineering across intelligence, infrastructure, and code.</h2>
+          </div>
+          <div class="services-teaser-grid">
+            <article class="service-card card-hover">
+              <div class="service-icon"><span>🤖</span></div>
+              <h3 class="card-title">AI/ML Integration</h3>
+              <p class="card-copy">Edge-ready models, cloud APIs, computer vision, and anomaly detection.</p>
+            </article>
+            <article class="service-card card-hover">
+              <div class="service-icon"><span>🛡️</span></div>
+              <h3 class="card-title">Cybersecurity Solutions</h3>
+              <p class="card-copy">Threat detection pipelines, phishing defense, and browser security tooling.</p>
+            </article>
+            <article class="service-card card-hover">
+              <div class="service-icon"><span>🌐</span></div>
+              <h3 class="card-title">IoT &amp; Mesh Networking</h3>
+              <p class="card-copy">Distributed communication systems designed for zero-infrastructure conditions.</p>
+            </article>
+            <article class="service-card card-hover">
+              <div class="service-icon"><span>⚙️</span></div>
+              <h3 class="card-title">Hardware Automation</h3>
+              <p class="card-copy">Sensor-driven automation, custom electronics, and control logic systems.</p>
+            </article>
+            <article class="service-card card-hover">
+              <div class="service-icon"><span>💾</span></div>
+              <h3 class="card-title">Embedded Systems</h3>
+              <p class="card-copy">Firmware, RTOS integration, and real-time hardware intelligence.</p>
+            </article>
+            <article class="service-card card-hover">
+              <div class="service-icon"><span>🖥️</span></div>
+              <h3 class="card-title">Full Stack Development</h3>
+              <p class="card-copy">Responsive interfaces, APIs, databases, and deployment-ready products.</p>
+            </article>
+          </div>
+          <div class="section-footer-link">
+            <a class="inline-link" href="./services.html">See All Services →</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-label">What We've Built</span>
+            <h2 class="section-heading">From phishing defense to disaster response architecture.</h2>
+          </div>
+          <div class="featured-projects-grid">
+            <article class="project-card card-hover">
+              <span class="project-status status-live">Live</span>
+              <h3 class="project-title">PhishGuard</h3>
+              <p class="project-short">Real-time phishing detection with community trust scoring.</p>
+              <p class="project-description">
+                Chrome extension plus Flask backend for phishing detection using
+                multi-signal analysis, trust-weighted voting, and device-level
+                bot defense, shaped through competition pressure and real-world
+                browser testing.
+              </p>
+              <div class="project-tags">
+                <span class="tag-chip">Cybersecurity</span>
+                <span class="tag-chip">ML</span>
+                <span class="tag-chip">Flask</span>
+              </div>
+            </article>
+            <article class="project-card card-hover">
+              <span class="project-status status-live">Live</span>
+              <h3 class="project-title">SurgiScore</h3>
+              <p class="project-short">AI-powered arthroscopic surgical training evaluator.</p>
+              <p class="project-description">
+                Surgical performance evaluation using YOLOv8, MediaPipe, LSTM,
+                anomaly detection, and clinical feedback workflows for
+                arthroscopic assessment.
+              </p>
+              <div class="project-tags">
+                <span class="tag-chip">Medical AI</span>
+                <span class="tag-chip">Computer Vision</span>
+                <span class="tag-chip">YOLOv8</span>
+              </div>
+            </article>
+            <article class="project-card card-hover">
+              <span class="project-status status-development">In Development</span>
+              <h3 class="project-title">PulseNet+</h3>
+              <p class="project-short">Satellite + drone swarm disaster response mesh network.</p>
+              <p class="project-description">
+                Disaster-ready communication architecture combining satellites,
+                autonomous drones, edge AI, and mass alert delivery for
+                zero-infrastructure response zones.
+              </p>
+              <div class="project-tags">
+                <span class="tag-chip">IoT</span>
+                <span class="tag-chip">Drone Swarm</span>
+                <span class="tag-chip">Satellite</span>
+              </div>
+            </article>
+          </div>
+          <div class="section-footer-link">
+            <a class="inline-link" href="./projects.html">View All Projects →</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-label">The Minds Behind Zero Gravity</span>
+            <h2 class="section-heading">Six engineering students building beyond the classroom.</h2>
+            <p class="lead" data-auth-greeting hidden></p>
+          </div>
+          <div class="team-preview-grid">
+            <a class="team-preview-item" href="./team.html">
+              <img src="./ARUNESHWARAN.jpeg" alt="Aruneshwaran K portrait" />
+              <div class="team-preview-name">Aruneshwaran K</div>
+            </a>
+            <a class="team-preview-item" href="./team.html">
+              <img src="./HARINISRI%20M.jpeg" alt="Harinisri M portrait" />
+              <div class="team-preview-name">Harinisri M</div>
+            </a>
+            <a class="team-preview-item" href="./team.html">
+              <img src="./HEMAVERTHINI%20V%20B.jpeg" alt="Hemavarthini V B portrait" />
+              <div class="team-preview-name">Hemavarthini V B</div>
+            </a>
+            <a class="team-preview-item" href="./team.html">
+              <img src="./VARUNRAJ%20V%20K.jpeg" alt="Varunraj V K portrait" />
+              <div class="team-preview-name">Varunraj V K</div>
+            </a>
+            <a class="team-preview-item" href="./team.html">
+              <img src="./SHARANESH%20K%20N.jpeg" alt="Sharanesh K N portrait" />
+              <div class="team-preview-name">Sharanesh K N</div>
+            </a>
+            <a class="team-preview-item" href="./team.html">
+              <img src="./HARISH%20RAGHAVENDRA%20M.jpeg" alt="Harish Raghavendra M portrait" />
+              <div class="team-preview-name">Harish Raghavendra M</div>
+            </a>
+          </div>
+          <div class="section-footer-link">
+            <a class="inline-link" href="./team.html">Meet The Full Team →</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="container">
+          <div class="cta-strip">
+            <div class="cta-strip-inner">
+              <div>
+                <h2 class="section-heading">Have a problem? We build the solution with you.</h2>
+                <p>
+                  From research-heavy prototypes to deployment-ready systems, we
+                  build with speed, rigor, and intent.
+                </p>
+              </div>
+              <a class="button button-dark" href="./contact.html">Share Your Problem Statement</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+  </body>
+</html>

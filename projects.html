@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Projects | Team Zero Gravity</title>
+    <meta
+      name="description"
+      content="Explore live, in-development, and research projects built by Team Zero Gravity."
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="./supabase-config.js" defer></script>
+    <script src="./nav.js" defer></script>
+    <script src="./animations.js" defer></script>
+    <script src="./auth.js" defer></script>
+    <script src="./visitor-counter.js" defer></script>
+  </head>
+  <body>
+    <div id="site-nav"></div>
+
+    <main>
+      <section class="page-hero reveal">
+        <div class="container">
+          <span class="eyebrow">Projects</span>
+          <h1 class="section-heading">What We've Built</h1>
+          <p class="page-hero-copy">Real problems. Real systems. Real impact.</p>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="container">
+          <div class="filter-bar" aria-label="Project filters">
+            <button class="filter-chip is-active" type="button" data-filter="all">All</button>
+            <button class="filter-chip" type="button" data-filter="ai-ml">AI/ML</button>
+            <button class="filter-chip" type="button" data-filter="cybersecurity">Cybersecurity</button>
+            <button class="filter-chip" type="button" data-filter="hardware">Hardware</button>
+            <button class="filter-chip" type="button" data-filter="iot">IoT</button>
+            <button class="filter-chip" type="button" data-filter="medical">Medical</button>
+          </div>
+
+          <div class="projects-grid" id="projects-grid">
+            <article class="project-card project-card-media card-hover" id="project-phishguard" data-tags="all cybersecurity ai-ml">
+              <span class="project-status status-live">Live</span>
+              <figure class="project-media">
+                <img src="./Phishguard.jpeg" alt="PhishGuard project preview" />
+              </figure>
+              <h2 class="project-title">PhishGuard</h2>
+              <p class="project-short">Real-time phishing detection with community trust scoring.</p>
+              <p class="project-description">
+                A Chrome extension with a Python and Flask backend that spots
+                phishing URLs using browser signals, trust scoring, and bot
+                defense. Signals and review data are stored in Supabase.
+              </p>
+              <div class="project-tags">
+                <span class="tag-chip">Cybersecurity</span>
+                <span class="tag-chip">ML</span>
+                <span class="tag-chip">Chrome Extension</span>
+                <span class="tag-chip">Flask</span>
+              </div>
+              <div class="member-avatar-list" aria-label="Project team members">
+                <img class="project-member-avatar" src="./ARUNESHWARAN.jpeg" alt="Aruneshwaran K portrait" />
+                <img class="project-member-avatar" src="./HARINISRI%20M.jpeg" alt="Harinisri M portrait" />
+                <img class="project-member-avatar" src="./HEMAVERTHINI%20V%20B.jpeg" alt="Hemavarthini V B portrait" />
+                <img class="project-member-avatar" src="./VARUNRAJ%20V%20K.jpeg" alt="Varunraj V K portrait" />
+                <img class="project-member-avatar" src="./SHARANESH%20K%20N.jpeg" alt="Sharanesh K N portrait" />
+              </div>
+              <div class="project-footer">
+                <a class="ghost-button" href="#project-phishguard">View Details</a>
+                <div class="project-links">
+                  <a class="icon-link" href="#" aria-label="PhishGuard GitHub repository">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2.17c-3.2.7-3.88-1.54-3.88-1.54-.52-1.34-1.28-1.69-1.28-1.69-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.71 1.26 3.37.97.1-.75.4-1.27.72-1.56-2.55-.29-5.23-1.27-5.23-5.67 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a10.9 10.9 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.41-2.68 5.37-5.24 5.66.41.36.78 1.08.78 2.18v3.24c0 .31.2.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+                    <span>GitHub</span>
+                  </a>
+                  <!-- TODO: replace with real URL -->
+                </div>
+              </div>
+            </article>
+
+            <article class="project-card project-card-media card-hover" id="project-surgiscore" data-tags="all ai-ml medical">
+              <span class="project-status status-live">Live</span>
+              <figure class="project-media">
+                <img src="./SurgiScore.jpeg" alt="SurgiScore project preview" />
+              </figure>
+              <h2 class="project-title">SurgiScore</h2>
+              <p class="project-short">AI-powered arthroscopic surgical training evaluator.</p>
+              <p class="project-description">
+                An arthroscopic surgery evaluation system built by Aruneshwaran
+                using YOLOv8, MediaPipe, and temporal analysis for skill
+                assessment and training support.
+              </p>
+              <div class="project-tags">
+                <span class="tag-chip">Medical AI</span>
+                <span class="tag-chip">Computer Vision</span>
+                <span class="tag-chip">YOLOv8</span>
+                <span class="tag-chip">LSTM</span>
+              </div>
+              <div class="member-avatar-list" aria-label="Project team members">
+                <img class="project-member-avatar" src="./ARUNESHWARAN.jpeg" alt="Aruneshwaran K portrait" />
+              </div>
+              <div class="project-footer">
+                <a class="ghost-button" href="#project-surgiscore">View Details</a>
+                <div class="project-links">
+                  <a class="icon-link" href="#" aria-label="SurgiScore GitHub repository">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2.17c-3.2.7-3.88-1.54-3.88-1.54-.52-1.34-1.28-1.69-1.28-1.69-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.71 1.26 3.37.97.1-.75.4-1.27.72-1.56-2.55-.29-5.23-1.27-5.23-5.67 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a10.9 10.9 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.41-2.68 5.37-5.24 5.66.41.36.78 1.08.78 2.18v3.24c0 .31.2.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+                    <span>GitHub</span>
+                  </a>
+                  <!-- TODO: replace with real URL -->
+                </div>
+              </div>
+            </article>
+
+            <article class="project-card card-hover" id="project-pulsenet" data-tags="all iot hardware">
+              <span class="project-status status-development">In Development</span>
+              <h2 class="project-title">PulseNet+</h2>
+              <p class="project-short">Satellite + drone swarm disaster response mesh network.</p>
+              <p class="project-description">
+                A disaster-response architecture that combines IoT mesh nodes,
+                satellite support, drone swarms, edge AI, and public alert
+                delivery for zero-infrastructure zones.
+              </p>
+              <div class="project-tags">
+                <span class="tag-chip">IoT</span>
+                <span class="tag-chip">Disaster Response</span>
+                <span class="tag-chip">Drone Swarm</span>
+                <span class="tag-chip">Satellite</span>
+              </div>
+              <div class="member-avatar-list" aria-label="Project team members">
+                <img class="project-member-avatar" src="./ARUNESHWARAN.jpeg" alt="Aruneshwaran K portrait" />
+                <img class="project-member-avatar" src="./HARINISRI%20M.jpeg" alt="Harinisri M portrait" />
+                <img class="project-member-avatar" src="./VARUNRAJ%20V%20K.jpeg" alt="Varunraj V K portrait" />
+                <img class="project-member-avatar" src="./HARISH%20RAGHAVENDRA%20M.jpeg" alt="Harish Raghavendra M portrait" />
+              </div>
+              <div class="project-footer">
+                <a class="ghost-button" href="#project-pulsenet">View Details</a>
+                <div class="project-links">
+                  <a class="icon-link" href="#" aria-label="PulseNet+ GitHub repository">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2.17c-3.2.7-3.88-1.54-3.88-1.54-.52-1.34-1.28-1.69-1.28-1.69-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.71 1.26 3.37.97.1-.75.4-1.27.72-1.56-2.55-.29-5.23-1.27-5.23-5.67 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a10.9 10.9 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.41-2.68 5.37-5.24 5.66.41.36.78 1.08.78 2.18v3.24c0 .31.2.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+                    <span>GitHub</span>
+                  </a>
+                  <!-- TODO: replace with real URL -->
+                </div>
+              </div>
+            </article>
+
+            <article class="project-card project-card-media card-hover" id="project-smartathon" data-tags="all cybersecurity ai-ml">
+              <span class="project-status status-finalist">National Finalist</span>
+              <figure class="project-media">
+                <img src="./SMARTATHON%202.0.jpeg" alt="Team Zero Gravity at Smartathon 2.0" />
+              </figure>
+              <h2 class="project-title">Smartathon 2.0</h2>
+              <p class="project-short">National finalist recognition for our phishing detection Chrome extension.</p>
+              <p class="project-description">
+                Selected as National Finalists at St. Joseph's College for a
+                phishing detection Chrome extension focused on real-time web
+                threat prevention.
+              </p>
+              <div class="project-tags">
+                <span class="tag-chip">Smartathon 2.0</span>
+                <span class="tag-chip">Cybersecurity</span>
+                <span class="tag-chip">Chrome Extension</span>
+                <span class="tag-chip">National Finalist</span>
+              </div>
+              <p class="project-achievement-note">Achievement card based on our Smartathon 2.0 national finalist journey.</p>
+              <div class="project-footer">
+                <a class="ghost-button" href="#project-smartathon">View Details</a>
+                <div class="project-links">
+                  <a class="icon-link" href="#" aria-label="Smartathon 2.0 project repository">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2.17c-3.2.7-3.88-1.54-3.88-1.54-.52-1.34-1.28-1.69-1.28-1.69-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.71 1.26 3.37.97.1-.75.4-1.27.72-1.56-2.55-.29-5.23-1.27-5.23-5.67 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a10.9 10.9 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.41-2.68 5.37-5.24 5.66.41.36.78 1.08.78 2.18v3.24c0 .31.2.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+                    <span>GitHub</span>
+                  </a>
+                  <!-- TODO: replace with real URL -->
+                </div>
+              </div>
+            </article>
+
+            <article class="project-card project-card-media card-hover" id="project-robosoccer" data-tags="all hardware">
+              <span class="project-status status-finalist">National Finalist</span>
+              <figure class="project-media">
+                <img src="./ROBOSOCCER.jpeg" alt="Team Zero Gravity at RoboSoccer and IIT Shaastra events" />
+              </figure>
+              <h2 class="project-title">RoboSoccer &amp; Line Follower</h2>
+              <p class="project-short">National finalist RoboSoccer run with round-two Line Follower recognition at IIT Shaastra 2026.</p>
+              <p class="project-description">
+                At IIT Shaastra 2026, we became RoboSoccer national finalists
+                and reached Round 2 in Line Follower, showcasing robotics,
+                autonomous navigation, and control-system design.
+              </p>
+              <div class="project-tags">
+                <span class="tag-chip">RoboSoccer</span>
+                <span class="tag-chip">Line Follower</span>
+                <span class="tag-chip">Robotics</span>
+                <span class="tag-chip">IIT Shaastra 2026</span>
+              </div>
+              <p class="project-achievement-note">Achievement card based on our IIT Shaastra 2026 technical event participation.</p>
+              <div class="project-footer">
+                <a class="ghost-button" href="#project-robosoccer">View Details</a>
+                <div class="project-links">
+                  <a class="icon-link" href="#" aria-label="RoboSoccer project repository">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2.17c-3.2.7-3.88-1.54-3.88-1.54-.52-1.34-1.28-1.69-1.28-1.69-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.71 1.26 3.37.97.1-.75.4-1.27.72-1.56-2.55-.29-5.23-1.27-5.23-5.67 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a10.9 10.9 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.41-2.68 5.37-5.24 5.66.41.36.78 1.08.78 2.18v3.24c0 .31.2.68.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+                    <span>GitHub</span>
+                  </a>
+                  <!-- TODO: replace with real URL -->
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="container">
+          <div class="cta-strip">
+            <div class="cta-strip-inner">
+              <div>
+                <h2 class="section-heading">Have a problem statement? Let's build it together.</h2>
+                <p>We love real constraints, ambitious systems, and meaningful problems.</p>
+              </div>
+              <a class="button button-dark" href="./contact.html">Share Your Problem Statement</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const filterButtons = document.querySelectorAll("[data-filter]");
+        const projectCards = document.querySelectorAll("#projects-grid .project-card");
+
+        filterButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            const filter = button.dataset.filter;
+
+            filterButtons.forEach((item) => item.classList.remove("is-active"));
+            button.classList.add("is-active");
+
+            projectCards.forEach((card) => {
+              const matches = filter === "all" || card.dataset.tags.includes(filter);
+              card.classList.toggle("is-hidden", !matches);
+            });
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

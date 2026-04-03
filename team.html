@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Team | Team Zero Gravity</title>
+    <meta
+      name="description"
+      content="Meet the six core engineering students behind Team Zero Gravity."
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="./supabase-config.js" defer></script>
+    <script src="./nav.js" defer></script>
+    <script src="./animations.js" defer></script>
+    <script src="./auth.js" defer></script>
+    <script src="./visitor-counter.js" defer></script>
+    <script src="./approved-members.js" defer></script>
+    <script src="./team-modal.js" defer></script>
+  </head>
+  <body>
+    <div id="site-nav"></div>
+
+    <main>
+      <section class="page-hero reveal">
+        <div class="container">
+          <span class="eyebrow">Core Team</span>
+          <h1 class="section-heading">The Core Team</h1>
+          <p class="page-hero-copy">Six engineering students. One mission.</p>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="container">
+          <div class="team-grid">
+            <article
+              class="member-card"
+              tabindex="0"
+              role="button"
+              aria-label="Open Aruneshwaran K bio"
+              data-team-member="true"
+              data-name="Aruneshwaran K"
+              data-role="Founder &amp; AI/Cybersecurity Lead"
+              data-tagline="Making machines think and threats retreat."
+              data-description="Leads the team's AI and cybersecurity initiatives across PhishGuard, PulseNet+, and technical event builds. Works deeply in ML-based threat detection, phishing defense, IoT security, and agentic AI architectures. Also handles content creation, digital marketing, and the public-facing direction of Team Zero Gravity."
+              data-skills="Python|ML/DL|Flask|Cybersecurity|IoT|OSINT|Linux|Content Creation|Digital Marketing|Hackathon Strategy"
+              data-image="./ARUNESHWARAN.jpeg"
+              data-linkedin="https://www.linkedin.com/in/aruneshwaran-k-671065230/"
+            >
+              <img class="member-avatar" src="./ARUNESHWARAN.jpeg" alt="Aruneshwaran K portrait" />
+              <h2 class="member-name">Aruneshwaran K</h2>
+              <p class="member-role">Founder &amp; AI/Cybersecurity Lead</p>
+              <div class="member-separator"></div>
+              <div class="member-preview-tags">
+                <span class="tag-chip">Cybersecurity</span>
+                <span class="tag-chip">Content Creation</span>
+              </div>
+              <p class="member-tagline">Making machines think and threats retreat.</p>
+            </article>
+
+            <article
+              class="member-card"
+              tabindex="0"
+              role="button"
+              aria-label="Open Harinisri M bio"
+              data-team-member="true"
+              data-name="Harinisri M"
+              data-role="Co-Founder &amp; Hardware Lead"
+              data-tagline="Where circuits meet intelligence."
+              data-description="Co-leads the team with a focus on hardware architecture, PCB design, and embedded integration. She bridges intelligent software with reliable physical deployment across core builds, while also contributing public speaking, content writing, and technical storytelling for the team."
+              data-skills="PCB Design|Embedded Systems|Hardware Prototyping|Circuit Design|KiCad|Public Speaking|Content Writing|System Planning"
+              data-image="./HARINISRI%20M.jpeg"
+              data-linkedin="https://www.linkedin.com/in/harinisri-m-401872369/"
+            >
+              <img class="member-avatar" src="./HARINISRI%20M.jpeg" alt="Harinisri M portrait" />
+              <h2 class="member-name">Harinisri M</h2>
+              <p class="member-role">Co-Founder &amp; Hardware Lead</p>
+              <div class="member-separator"></div>
+              <div class="member-preview-tags">
+                <span class="tag-chip">Public Speaking</span>
+                <span class="tag-chip">Content Writing</span>
+              </div>
+              <p class="member-tagline">Where circuits meet intelligence.</p>
+            </article>
+
+            <article
+              class="member-card"
+              tabindex="0"
+              role="button"
+              aria-label="Open Hemavarthini V B bio"
+              data-team-member="true"
+              data-name="Hemavarthini V B"
+              data-role="Hardware &amp; EEE Research Associate"
+              data-tagline="Power, precision, and persistence."
+              data-description="Focuses on electrical systems research, power electronics, and hardware testing. Contributes disciplined debugging, documentation, and component-level validation across team builds, bringing strong EEE thinking into every cross-disciplinary prototype."
+              data-skills="EEE|Power Systems|Hardware Testing|Research|Circuit Analysis|Documentation|Presentation Skills|Quality Review"
+              data-image="./HEMAVERTHINI%20V%20B.jpeg"
+              data-linkedin="https://www.linkedin.com/in/hemavarthini-balakrishnan-1a848a384"
+            >
+              <img class="member-avatar" src="./HEMAVERTHINI%20V%20B.jpeg" alt="Hemavarthini V B portrait" />
+              <h2 class="member-name">Hemavarthini V B</h2>
+              <p class="member-role">Hardware &amp; EEE Research Associate</p>
+              <div class="member-separator"></div>
+              <div class="member-preview-tags">
+                <span class="tag-chip">Research</span>
+                <span class="tag-chip">Documentation</span>
+              </div>
+              <p class="member-tagline">Power, precision, and persistence.</p>
+            </article>
+
+            <article
+              class="member-card"
+              tabindex="0"
+              role="button"
+              aria-label="Open Varunraj V K bio"
+              data-team-member="true"
+              data-name="Varunraj V K"
+              data-role="Full Stack Development Lead"
+              data-tagline="From pixels to production."
+              data-description="IT student with hands-on projects in cybersecurity, IoT, and full-stack web development. Built a phishing detection Chrome extension, a RoboSoccer system, and a line follower bot. Comfortable across embedded systems, browser APIs, and full-stack development, and always looking for a real project to own and deliver."
+              data-skills="React|Node.js|REST APIs|IoT|Browser APIs|UI/UX|Project Ownership|Client Delivery"
+              data-image="./VARUNRAJ%20V%20K.jpeg"
+              data-linkedin="https://www.linkedin.com/in/varunrajvk"
+            >
+              <img class="member-avatar" src="./VARUNRAJ%20V%20K.jpeg" alt="Varunraj V K portrait" />
+              <h2 class="member-name">Varunraj V K</h2>
+              <p class="member-role">Full Stack Development Lead</p>
+              <div class="member-separator"></div>
+              <div class="member-preview-tags">
+                <span class="tag-chip">Full Stack</span>
+                <span class="tag-chip">Project Ownership</span>
+              </div>
+              <p class="member-tagline">From pixels to production.</p>
+            </article>
+
+            <article
+              class="member-card"
+              tabindex="0"
+              role="button"
+              aria-label="Open Sharanesh K N bio"
+              data-team-member="true"
+              data-name="Sharanesh K N"
+              data-role="Embedded Systems Research Associate"
+              data-tagline="Real-time, every time."
+              data-description="Hackathon-tested full-stack developer skilled in embedded systems, IoT, Android, and web — including Arduino, NodeMCU, FastAPI, and Supabase. Built real solutions including phishing detection and smart parking systems, with strong comfort in rapid prototyping and deployable student builds."
+              data-skills="Arduino|NodeMCU|FastAPI|Supabase|Embedded Systems|IoT|Android|Rapid Prototyping|Product Thinking"
+              data-image="./SHARANESH%20K%20N.jpeg"
+              data-linkedin="https://www.linkedin.com/in/sharaneshkn0408"
+            >
+              <img class="member-avatar" src="./SHARANESH%20K%20N.jpeg" alt="Sharanesh K N portrait" />
+              <h2 class="member-name">Sharanesh K N</h2>
+              <p class="member-role">Embedded Systems Research Associate</p>
+              <div class="member-separator"></div>
+              <div class="member-preview-tags">
+                <span class="tag-chip">FastAPI</span>
+                <span class="tag-chip">Rapid Prototyping</span>
+              </div>
+              <p class="member-tagline">Real-time, every time.</p>
+            </article>
+
+            <article
+              class="member-card"
+              tabindex="0"
+              role="button"
+              aria-label="Open Harish Raghavendra M bio"
+              data-team-member="true"
+              data-name="Harish Raghavendra M"
+              data-role="Robotics &amp; Automation Research Associate"
+              data-tagline="Building machines that move with purpose."
+              data-description="Works on robotic systems, automation logic, and mechanical integration. Focuses on autonomous movement, actuator control, and robotics prototyping, while also bringing strong event coordination, teamwork, and practical problem-solving to fast-moving technical builds."
+              data-skills="Robotics|Automation|ROS|Actuators|Prototyping|Kinematics|Team Coordination|Creative Problem Solving|Event Operations"
+              data-image="./HARISH%20RAGHAVENDRA%20M.jpeg"
+              data-linkedin="https://www.linkedin.com/in/harish-raghavendra-023291383/"
+            >
+              <img class="member-avatar" src="./HARISH%20RAGHAVENDRA%20M.jpeg" alt="Harish Raghavendra M portrait" />
+              <h2 class="member-name">Harish Raghavendra M</h2>
+              <p class="member-role">Robotics &amp; Automation Research Associate</p>
+              <div class="member-separator"></div>
+              <div class="member-preview-tags">
+                <span class="tag-chip">Robotics</span>
+                <span class="tag-chip">Team Coordination</span>
+              </div>
+              <p class="member-tagline">Building machines that move with purpose.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-label">Joining Zero Gravity</span>
+            <h2 class="section-heading">Approved Members</h2>
+            <p class="lead">
+              These applicants were reviewed and approved to be shown on the website.
+            </p>
+          </div>
+          <div class="approved-members-grid" id="approved-members-grid"></div>
+          <p class="muted text-center approved-members-empty" id="approved-members-empty">
+            No approved members are visible yet. New approved applicants will appear here after review.
+          </p>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="container">
+          <div class="cta-strip">
+            <div class="cta-strip-inner">
+              <div>
+                <h3 class="section-heading">Think you belong here?</h3>
+                <p>
+                  We're always looking for passionate engineering students. Show us what
+                  you've built and how you want to contribute.
+                </p>
+              </div>
+              <a class="button button-dark" href="./contact.html#member-application">Apply To Join</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="member-modal-overlay" id="member-modal-overlay" aria-hidden="true">
+      <div class="team-modal" role="dialog" aria-modal="true" aria-labelledby="modal-name">
+        <button class="close-modal" id="modal-close" type="button" aria-label="Close member modal">✕</button>
+        <img class="modal-avatar" id="modal-avatar" src="" alt="" />
+        <h2 class="section-heading text-center" id="modal-name"></h2>
+        <p class="modal-role text-center" id="modal-role"></p>
+        <p class="muted text-center" id="modal-tagline"></p>
+        <p class="modal-description" id="modal-description"></p>
+        <div class="modal-actions">
+          <a
+            class="ghost-button modal-linkedin"
+            id="modal-linkedin"
+            href="#"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            View LinkedIn
+          </a>
+        </div>
+        <div class="skill-tags" id="modal-skills"></div>
+      </div>
+    </div>
+
+    <div id="site-footer"></div>
+  </body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Join Us | Team Zero Gravity</title>
+    <meta
+      name="description"
+      content="Apply to join Team Zero Gravity and work on real AI, hardware, embedded, IoT, cybersecurity, and full-stack projects."
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="./supabase-config.js" defer></script>
+    <script src="./nav.js" defer></script>
+    <script src="./animations.js" defer></script>
+    <script src="./auth.js" defer></script>
+    <script src="./visitor-counter.js" defer></script>
+    <script src="./join-form.js" defer></script>
+  </head>
+  <body>
+    <div id="site-nav"></div>
+
+    <main>
+      <section class="page-hero reveal">
+        <div class="container">
+          <span class="eyebrow">Join Zero Gravity</span>
+          <h1 class="section-heading">Work With The Team</h1>
+          <p class="page-hero-copy">
+            We are always open to engineering students who build, learn fast,
+            and want to work on real systems.
+          </p>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="container contact-grid">
+          <aside class="contact-panel">
+            <span class="section-label">Who Should Apply</span>
+            <h2 class="section-heading">Show us what you build.</h2>
+            <p class="lead">
+              We care more about curiosity, ownership, and shipped work than
+              formal titles. If you build seriously, we want to hear from you.
+            </p>
+
+            <div class="contact-card-grid">
+              <div class="contact-card">
+                <span class="contact-emoji">🛠️</span>
+                <div>
+                  <strong>Real builders</strong>
+                  <p class="card-copy">Projects, prototypes, research, bots, apps, hardware, or experiments.</p>
+                </div>
+              </div>
+              <div class="contact-card">
+                <span class="contact-emoji">🧠</span>
+                <div>
+                  <strong>Cross-disciplinary thinkers</strong>
+                  <p class="card-copy">AI, cybersecurity, hardware, embedded, IoT, robotics, software, and outreach.</p>
+                </div>
+              </div>
+              <div class="contact-card">
+                <span class="contact-emoji">🚀</span>
+                <div>
+                  <strong>People ready to ship</strong>
+                  <p class="card-copy">We move from concept to working system fast, and we value consistency.</p>
+                </div>
+              </div>
+              <div class="contact-card">
+                <span class="contact-emoji">✅</span>
+                <div>
+                  <strong>Admin-reviewed members</strong>
+                  <p class="card-copy">Applications are reviewed first. Only approved applicants appear on the Team page.</p>
+                </div>
+              </div>
+            </div>
+
+            <p class="availability-note">
+              We review every serious application personally. Share your best work honestly.
+            </p>
+            <div class="contact-art" aria-hidden="true"></div>
+          </aside>
+
+          <section class="contact-form">
+            <span class="section-label">Member Application</span>
+            <h2 class="section-heading">Apply to join Team Zero Gravity.</h2>
+            <p class="lead">
+              A strong application is clear, practical, and backed by real work.
+            </p>
+
+            <div data-auth-summary data-auth-summary-context="join"></div>
+            <p class="contact-auth-note" id="join-auth-note"></p>
+
+            <form id="join-form" novalidate>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="join-full-name">Full Name *</label>
+                  <input id="join-full-name" name="fullName" type="text" required />
+                  <span class="field-error" data-error-for="fullName"></span>
+                </div>
+                <div class="form-group">
+                  <label for="join-email">Email Address *</label>
+                  <input id="join-email" name="email" type="email" required />
+                  <span class="field-error" data-error-for="email"></span>
+                </div>
+                <div class="form-group">
+                  <label for="join-phone">Phone Number *</label>
+                  <input id="join-phone" name="phone" type="tel" required />
+                  <span class="field-error" data-error-for="phone"></span>
+                </div>
+                <div class="form-group">
+                  <label for="join-college">College *</label>
+                  <input id="join-college" name="college" type="text" required />
+                  <span class="field-error" data-error-for="college"></span>
+                </div>
+                <div class="form-group">
+                  <label for="join-department">Department / Course *</label>
+                  <input id="join-department" name="department" type="text" required />
+                  <span class="field-error" data-error-for="department"></span>
+                </div>
+                <div class="form-group">
+                  <label for="join-year">Year of Study *</label>
+                  <select id="join-year" name="yearOfStudy" required>
+                    <option value="">Select your year</option>
+                    <option>1st Year</option>
+                    <option>2nd Year</option>
+                    <option>3rd Year</option>
+                    <option>4th Year</option>
+                    <option>Recent Graduate</option>
+                  </select>
+                  <span class="field-error" data-error-for="yearOfStudy"></span>
+                </div>
+                <div class="form-group full-width">
+                  <label for="join-interest">Primary Area of Interest *</label>
+                  <select id="join-interest" name="areaOfInterest" required>
+                    <option value="">Select your area</option>
+                    <option>AI/ML</option>
+                    <option>Cybersecurity</option>
+                    <option>Hardware &amp; PCB</option>
+                    <option>Embedded Systems</option>
+                    <option>IoT &amp; Mesh Networking</option>
+                    <option>Full Stack Development</option>
+                    <option>Robotics &amp; Automation</option>
+                    <option>Design / Content / Outreach</option>
+                    <option>Other</option>
+                  </select>
+                  <span class="field-error" data-error-for="areaOfInterest"></span>
+                </div>
+                <div class="form-group full-width">
+                  <label for="join-preferred-role">Preferred Role In Team Zero Gravity *</label>
+                  <input
+                    id="join-preferred-role"
+                    name="preferredRole"
+                    type="text"
+                    required
+                    placeholder="Example: Full Stack Developer, PCB Designer, Security Researcher..."
+                  />
+                  <span class="field-error" data-error-for="preferredRole"></span>
+                </div>
+                <div class="form-group full-width">
+                  <label for="join-skills">Skills / Tools *</label>
+                  <textarea
+                    id="join-skills"
+                    name="skills"
+                    rows="3"
+                    required
+                    placeholder="Example: Python, React, KiCad, Arduino, ROS, Figma..."
+                  ></textarea>
+                  <span class="field-error" data-error-for="skills"></span>
+                </div>
+                <div class="form-group full-width">
+                  <label for="join-linkedin">LinkedIn URL</label>
+                  <input
+                    id="join-linkedin"
+                    name="linkedinUrl"
+                    type="url"
+                    placeholder="https://linkedin.com/in/..."
+                  />
+                  <span class="field-error" data-error-for="linkedinUrl"></span>
+                </div>
+                <div class="form-group full-width">
+                  <label for="join-github">GitHub URL</label>
+                  <input
+                    id="join-github"
+                    name="githubUrl"
+                    type="url"
+                    placeholder="https://github.com/..."
+                  />
+                  <span class="field-error" data-error-for="githubUrl"></span>
+                </div>
+                <div class="form-group full-width">
+                  <label for="join-portfolio">Portfolio / Resume / Drive Link</label>
+                  <input
+                    id="join-portfolio"
+                    name="portfolioUrl"
+                    type="url"
+                    placeholder="https://..."
+                  />
+                  <span class="field-error" data-error-for="portfolioUrl"></span>
+                </div>
+                <div class="form-group full-width">
+                  <label for="join-work">What have you built? *</label>
+                  <textarea
+                    id="join-work"
+                    name="previousWork"
+                    rows="4"
+                    required
+                    placeholder="Tell us about the projects, prototypes, research, or systems you have worked on..."
+                  ></textarea>
+                  <span class="field-error" data-error-for="previousWork"></span>
+                </div>
+                <div class="form-group full-width">
+                  <label for="join-contribution">How can you contribute to the team? *</label>
+                  <textarea
+                    id="join-contribution"
+                    name="teamContribution"
+                    rows="4"
+                    required
+                    placeholder="Tell us what kind of work you can take ownership of..."
+                  ></textarea>
+                  <span class="field-error" data-error-for="teamContribution"></span>
+                </div>
+                <div class="form-group full-width">
+                  <label for="join-motivation">Why do you want to join Zero Gravity? *</label>
+                  <textarea
+                    id="join-motivation"
+                    name="motivation"
+                    rows="4"
+                    required
+                    placeholder="Tell us why you want to work with the team..."
+                  ></textarea>
+                  <span class="field-error" data-error-for="motivation"></span>
+                </div>
+                <div class="form-group full-width">
+                  <label for="join-availability">Availability</label>
+                  <input
+                    id="join-availability"
+                    name="availability"
+                    type="text"
+                    placeholder="Example: 10 hours/week, weekends, evenings..."
+                  />
+                  <span class="field-error" data-error-for="availability"></span>
+                </div>
+                <div class="form-group full-width">
+                  <button class="button button-primary" type="submit">Submit Application →</button>
+                </div>
+              </div>
+            </form>
+
+            <p class="form-note">🔒 Your information is used for team review. Only admin-approved applicants are shown publicly on the Team page.</p>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+    <div class="toast" id="join-toast" role="status" aria-live="polite">
+      Application received! We'll review it and get back to you soon.
+    </div>
+  </body>
+</html>
