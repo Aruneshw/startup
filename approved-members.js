@@ -45,19 +45,33 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    const { data, error } = await client
-      .from(config.memberDirectoryTable || "zg_team_directory")
+    const { data: rows, error } = await client
+      .from("zg_member_interest")
       .select(
-        "display_name, role_title, headline, skills, college, linkedin_url, github_url, portfolio_url, avatar_url, display_order"
+        "full_name, public_display_name, preferred_role, public_role, area_of_interest, team_contribution, motivation, public_headline, skills, public_skills, college, linkedin_url, github_url, portfolio_url, public_avatar_url, display_order, submitted_at"
       )
-      .eq("is_visible", true)
+      .eq("approval_status", "approved")
+      .eq("show_on_team_page", true)
       .order("display_order", { ascending: true })
-      .order("created_at", { ascending: true });
+      .order("submitted_at", { ascending: true });
 
     if (error) {
       console.warn("Zero Gravity approved member load failed:", error.message);
       return;
     }
+
+    const data = (rows || []).map((row) => ({
+      display_name: row.public_display_name || row.full_name,
+      role_title: row.public_role || row.preferred_role || `${row.area_of_interest} Contributor`,
+      headline: row.public_headline || row.team_contribution || row.motivation || "Approved member of Team Zero Gravity",
+      skills: row.public_skills || row.skills || row.area_of_interest,
+      college: row.college,
+      linkedin_url: row.linkedin_url,
+      github_url: row.github_url,
+      portfolio_url: row.portfolio_url,
+      avatar_url: row.public_avatar_url || null,
+      display_order: row.display_order
+    }));
 
     if (!data || !data.length) {
       if (emptyState) {
