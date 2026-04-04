@@ -1879,6 +1879,32 @@ textarea {
   box-shadow: none;
 }
 
+.nav-signin {
+  min-height: 40px;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 245, 212, 0.3);
+  background: transparent;
+  color: var(--accent-cyan);
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition), background-color var(--transition);
+}
+
+.nav-signin:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0, 245, 212, 0.55);
+  background: rgba(0, 245, 212, 0.06);
+  box-shadow: 0 0 20px rgba(0, 245, 212, 0.12);
+}
+
+.mobile-nav-signin {
+  margin: 0.5rem 1.5rem;
+  width: calc(100% - 3rem);
+  text-align: center;
+}
+
 .auth-subtle,
 .contact-auth-note {
   font-size: 0.82rem;

@@ -56,6 +56,13 @@ for insert
 to anon, authenticated
 with check (true);
 
+drop policy if exists "Allow public read of problem statements" on public.zg_client_problem_statements;
+create policy "Allow public read of problem statements"
+on public.zg_client_problem_statements
+for select
+to anon, authenticated
+using (true);
+
 create table if not exists public.zg_member_interest (
   id bigint generated always as identity primary key,
   full_name text not null,

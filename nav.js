@@ -4,6 +4,7 @@ const navigationLinks = [
   { label: "Services", href: "./services.html" },
   { label: "Team", href: "./team.html" },
   { label: "Projects", href: "./projects.html" },
+  { label: "Problem Hub", href: "./problem-hub.html" },
   { label: "Contact", href: "./contact.html" },
 ];
 
@@ -77,6 +78,7 @@ function injectSiteChrome() {
           </nav>
           <div class="nav-actions">
             <div class="auth-slot desktop-auth" id="nav-auth-desktop"></div>
+            <button class="nav-signin" type="button" data-auth-action="signin">Sign in with Google</button>
             <a class="nav-cta" href="./contact.html">Let's Talk</a>
             <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open navigation menu">☰</button>
           </div>
@@ -85,6 +87,7 @@ function injectSiteChrome() {
       <nav class="nav-overlay" id="mobile-nav" aria-label="Mobile navigation">
         ${createNavLinks("nav-link mobile-nav-link")}
         <a class="nav-cta" href="./contact.html">Let's Talk</a>
+        <button class="nav-signin mobile-nav-signin" type="button" data-auth-action="signin">Sign in with Google</button>
         <div class="auth-slot mobile-auth" id="nav-auth-mobile"></div>
       </nav>
     `;

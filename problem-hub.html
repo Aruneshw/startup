@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Problem Hub | Team Zero Gravity</title>
+    <meta
+      name="description"
+      content="Explore problem statements posted by clients needing real-world solutions."
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="./supabase-config.js" defer></script>
+    <script src="./nav.js" defer></script>
+    <script src="./animations.js" defer></script>
+    <script src="./auth.js" defer></script>
+    <script src="./visitor-counter.js" defer></script>
+    <script src="./problem-hub.js" defer></script>
+  </head>
+  <body>
+    <div id="site-nav"></div>
+
+    <main>
+      <section class="page-hero reveal">
+        <div class="container">
+          <span class="eyebrow">Problem Hub</span>
+          <h1 class="section-heading">Latest Problems</h1>
+          <p class="page-hero-copy">Real challenges from our clients waiting to be solved.</p>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="container">
+          <div class="filter-bar" aria-label="Problem filters">
+            <button class="filter-chip is-active" type="button" data-filter="Latest">Latest</button>
+            <button class="filter-chip" type="button" data-filter="Popular">Popular</button>
+          </div>
+
+          <div id="problem-hub-loading" style="text-align: center; padding: 3rem;">
+            Loading problem statements...
+          </div>
+          <div id="problem-hub-error" style="text-align: center; color: #ff3366; display: none; padding: 2rem;">
+          </div>
+          <div id="problem-hub-empty" style="text-align: center; display: none; padding: 2rem;">
+            No problem statements have been posted yet.
+          </div>
+
+          <div class="projects-grid" id="problems-grid" style="display: none;">
+            <!-- Problem cards will be injected here via problem-hub.js -->
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="container">
+          <div class="cta-strip">
+            <div class="cta-strip-inner">
+              <div>
+                <h2 class="section-heading">Have a problem of your own?</h2>
+                <p>Submit it to the hub and let's start building a solution.</p>
+              </div>
+              <a class="button button-dark" href="./contact.html">Post Problem</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <div id="site-footer"></div>
+  </body>
+</html>

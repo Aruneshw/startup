@@ -213,11 +213,21 @@
     });
   }
 
+  function updateSignInButtons() {
+    document.querySelectorAll(".nav-signin").forEach((button) => {
+      button.style.display = currentUser ? "none" : "";
+    });
+    document.querySelectorAll(".mobile-nav-signin").forEach((button) => {
+      button.style.display = currentUser ? "none" : "";
+    });
+  }
+
   function renderAuth() {
     renderAuthSlot(document.getElementById("nav-auth-desktop"));
     renderAuthSlot(document.getElementById("nav-auth-mobile"));
     document.querySelectorAll("[data-auth-summary]").forEach(renderAuthSummary);
     updateAuthGreeting();
+    updateSignInButtons();
     bindAuthButtons();
   }
 
