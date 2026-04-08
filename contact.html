@@ -3,214 +3,83 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Contact | Team Zero Gravity</title>
+    <title>Contact | Zero Gravity</title>
     <meta
       name="description"
-      content="Work with Team Zero Gravity on AI, hardware, software, IoT, cybersecurity, and research projects."
+      content="Get in touch with Zero Gravity or join our growing community of student developers and problem solvers."
     />
     <link rel="stylesheet" href="./style.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <script src="./supabase-config.js" defer></script>
     <script src="./nav.js" defer></script>
     <script src="./animations.js" defer></script>
+    <script src="./particles.js" defer></script>
     <script src="./auth.js" defer></script>
     <script src="./visitor-counter.js" defer></script>
-    <script src="./contact-form.js" defer></script>
     <script src="./join-form.js" defer></script>
   </head>
   <body>
     <div id="site-nav"></div>
 
     <main>
-      <section class="page-hero reveal">
-        <div class="container">
-          <span class="eyebrow">Contact</span>
-          <h1 class="section-heading">Share Your Problem Statement</h1>
-          <p class="page-hero-copy">
-            Have a problem? We'll build the solution with you. Reach out — response
-            within 48 hours.
+      <section class="hero reveal" style="padding-bottom: 4rem;">
+        <canvas id="hero-particles" aria-hidden="true"></canvas>
+        <div class="container hero-content" style="max-width: 800px; margin: 0 auto; text-align: center;">
+          <span class="eyebrow">Community</span>
+          <h1 class="hero-title hero-title-brand" style="font-size: clamp(3rem, 6vw, 4.5rem);"><span>Join Zero Gravity</span></h1>
+          <p class="hero-copy" style="margin-left: auto; margin-right: auto;">
+            Apply to join our growing network of developers solving real-world problems. For general enquiries, find our contact details at the bottom of the page.
           </p>
         </div>
       </section>
 
-      <section class="section reveal">
+      <section class="section reveal" id="member-application" style="padding-top: 2rem;">
         <div class="container contact-grid">
           <aside class="contact-panel">
-            <span class="section-label">Get In Touch</span>
-            <h2 class="section-heading">Let's start with the problem you're solving.</h2>
+            <span class="section-label">Join The Community</span>
+            <h2 class="section-heading">Be part of something bigger.</h2>
             <p class="lead">
-              Share the challenge, the goal, and the constraints. We'll review
-              it and get back to you within 48 hours.
-            </p>
-            <div class="contact-card-grid">
-              <div class="contact-card">
-                <span class="contact-emoji">📧</span>
-                <a href="mailto:teamzerogravityorg@gmail.com">teamzerogravityorg@gmail.com</a>
-              </div>
-              <div class="contact-card">
-                <span class="contact-emoji">📞</span>
-                <a href="tel:+919095736279">+91 90957 36279</a>
-              </div>
-              <div class="contact-card">
-                <span class="contact-emoji">📞</span>
-                <a href="tel:+917539988669">+91 75399 88669</a>
-              </div>
-              <div class="contact-card">
-                <span class="contact-emoji">📍</span>
-                <span>Tamil Nadu, India</span>
-              </div>
-            </div>
-
-            <div class="social-row">
-              <a class="social-link" href="https://github.com/teamzerogravityorg" target="_blank" rel="noreferrer">GitHub</a>
-              <a class="social-link" href="https://www.linkedin.com/in/zero-gravity-688356400/?isSelfProfile=true" target="_blank" rel="noreferrer">LinkedIn</a>
-              <a class="social-link" href="https://www.instagram.com/teamzero_gravity/" target="_blank" rel="noreferrer">Instagram</a>
-            </div>
-
-            <p class="availability-note">⏰ We typically respond within 48 hours.</p>
-            <div class="contact-art" aria-hidden="true"></div>
-          </aside>
-
-          <section class="contact-form">
-            <span class="section-label">Share a Problem Statement</span>
-            <h2 class="section-heading">Tell us the challenge you're working on.</h2>
-            <p class="lead">
-              A short, clear summary is enough. We can discuss the rest with
-              you after the first reply.
-            </p>
-            <div data-auth-summary data-auth-summary-context="problem"></div>
-            <p class="contact-auth-note" id="contact-auth-note"></p>
-            <form id="contact-form" novalidate>
-              <div class="form-grid">
-                <div class="form-group">
-                  <label for="full-name">Full Name *</label>
-                  <input id="full-name" name="fullName" type="text" required />
-                  <span class="field-error" data-error-for="fullName"></span>
-                </div>
-                <div class="form-group">
-                  <label for="email">Email Address *</label>
-                  <input id="email" name="email" type="email" required />
-                  <span class="field-error" data-error-for="email"></span>
-                </div>
-                <div class="form-group">
-                  <label for="phone">Phone Number</label>
-                  <input id="phone" name="phone" type="tel" />
-                  <span class="field-error" data-error-for="phone"></span>
-                </div>
-                <div class="form-group">
-                  <label for="organization">College / Organization</label>
-                  <input id="organization" name="organization" type="text" />
-                  <span class="field-error" data-error-for="organization"></span>
-                </div>
-                <div class="form-group full-width">
-                  <label for="project-type">Project Type *</label>
-                  <select id="project-type" name="projectType" required>
-                    <option value="">Select a project type</option>
-                    <option>AI/ML Solution</option>
-                    <option>Hardware Automation</option>
-                    <option>IoT System</option>
-                    <option>Web/App Development</option>
-                    <option>Cybersecurity</option>
-                    <option>Robotics</option>
-                    <option>Research Collaboration</option>
-                    <option>Other</option>
-                  </select>
-                  <span class="field-error" data-error-for="projectType"></span>
-                </div>
-                <div class="form-group full-width">
-                  <label for="project-description">Problem Statement / Project Description *</label>
-                  <textarea
-                    id="project-description"
-                    name="projectDescription"
-                    rows="5"
-                    required
-                    placeholder="Describe the problem statement, challenge, or idea..."
-                  ></textarea>
-                  <span class="field-error" data-error-for="projectDescription"></span>
-                </div>
-                <div class="form-group">
-                  <label for="budget-range">Budget Range</label>
-                  <select id="budget-range" name="budgetRange">
-                    <option value="">Select a budget range</option>
-                    <option>Under ₹10,000</option>
-                    <option>₹10K–₹50K</option>
-                    <option>₹50K–₹2 Lakhs</option>
-                    <option>Above ₹2 Lakhs</option>
-                    <option>Open to Discussion</option>
-                    <option>Not Sure Yet</option>
-                  </select>
-                  <span class="field-error" data-error-for="budgetRange"></span>
-                </div>
-                <div class="form-group">
-                  <label for="source">How did you find us?</label>
-                  <select id="source" name="source">
-                    <option value="">Select one</option>
-                    <option>Hackathon</option>
-                    <option>College</option>
-                    <option>LinkedIn</option>
-                    <option>GitHub</option>
-                    <option>Referral</option>
-                    <option>Other</option>
-                  </select>
-                  <span class="field-error" data-error-for="source"></span>
-                </div>
-                <div class="form-group full-width">
-                  <button class="button button-primary" type="submit">Send Enquiry →</button>
-                </div>
-              </div>
-            </form>
-            <p class="form-note">🔒 Your information is never shared or sold.</p>
-          </section>
-        </div>
-      </section>
-
-      <section class="section reveal" id="member-application">
-        <div class="container contact-grid">
-          <aside class="contact-panel">
-            <span class="section-label">Join The Team</span>
-            <h2 class="section-heading">Want to work and build with us?</h2>
-            <p class="lead">
-              If you are serious about engineering, problem solving, and
-              building real systems, apply here. We review each application
-              manually before adding anyone to the public team list.
+              We're building a growing community of college students and
+              developers who solve real-world tech problems, earn recognition,
+              and build proof-of-skill profiles through practical experience.
             </p>
 
             <div class="contact-card-grid">
               <div class="contact-card">
                 <span class="contact-emoji">🛠️</span>
                 <div>
-                  <strong>Show your skills</strong>
-                  <p class="card-copy">Tell us the tools, technologies, and strengths you can actually use in projects.</p>
+                  <strong>Solve real problems</strong>
+                  <p class="card-copy">Work on actual client challenges — bugs, development tasks, and coding problems from real businesses.</p>
                 </div>
               </div>
               <div class="contact-card">
-                <span class="contact-emoji">🧠</span>
+                <span class="contact-emoji">🏆</span>
                 <div>
-                  <strong>Tell us your reason</strong>
-                  <p class="card-copy">We want to know why you want to join and what kind of work you want to own.</p>
+                  <strong>Earn recognition</strong>
+                  <p class="card-copy">Get badges, ratings, and "best solution" awards that build your proof-of-skill profile.</p>
                 </div>
               </div>
               <div class="contact-card">
-                <span class="contact-emoji">✅</span>
+                <span class="contact-emoji">💰</span>
                 <div>
-                  <strong>Admin approval first</strong>
-                  <p class="card-copy">Not every applicant is shown on the website. Only approved members appear on the Team page.</p>
+                  <strong>Learn & earn</strong>
+                  <p class="card-copy">Apply your knowledge on real-world projects while earning income and building credibility.</p>
                 </div>
               </div>
             </div>
 
             <p class="availability-note">
-              Approved applicants can later be shown publicly as members after admin review.
+              Approved members appear publicly on the community page after admin review.
             </p>
             <div class="contact-art" aria-hidden="true"></div>
           </aside>
 
           <section class="contact-form">
-            <span class="section-label">Member Application</span>
-            <h2 class="section-heading">Apply to join Team Zero Gravity.</h2>
+            <span class="section-label">Community Application</span>
+            <h2 class="section-heading">Apply to join Zero Gravity.</h2>
             <p class="lead">
-              Share your skills, your reason for joining, and the kind of work
-              you want to contribute to the team.
+              Share your skills, your reason for joining, and the kind of
+              problems you want to solve.
             </p>
 
             <div data-auth-summary data-auth-summary-context="join"></div>
@@ -272,7 +141,7 @@
                   <span class="field-error" data-error-for="areaOfInterest"></span>
                 </div>
                 <div class="form-group full-width">
-                  <label for="join-preferred-role">Preferred Role In Team Zero Gravity *</label>
+                  <label for="join-preferred-role">Preferred Role *</label>
                   <input
                     id="join-preferred-role"
                     name="preferredRole"
@@ -335,13 +204,13 @@
                   <span class="field-error" data-error-for="previousWork"></span>
                 </div>
                 <div class="form-group full-width">
-                  <label for="join-contribution">How can you contribute to the team? *</label>
+                  <label for="join-contribution">How can you contribute to the community? *</label>
                   <textarea
                     id="join-contribution"
                     name="teamContribution"
                     rows="4"
                     required
-                    placeholder="Tell us what kind of work you can take ownership of..."
+                    placeholder="Tell us what kind of problems you want to solve..."
                   ></textarea>
                   <span class="field-error" data-error-for="teamContribution"></span>
                 </div>
@@ -352,7 +221,7 @@
                     name="motivation"
                     rows="4"
                     required
-                    placeholder="Tell us why you want to work with the team..."
+                    placeholder="Tell us why you want to be part of this community..."
                   ></textarea>
                   <span class="field-error" data-error-for="motivation"></span>
                 </div>
@@ -372,16 +241,13 @@
               </div>
             </form>
 
-            <p class="form-note">🔒 Applications are reviewed first. Only admin-approved applicants are shown publicly on the Team page.</p>
+            <p class="form-note">🔒 Applications are reviewed first. Only admin-approved members are shown publicly.</p>
           </section>
         </div>
       </section>
     </main>
 
     <div id="site-footer"></div>
-    <div class="toast" id="contact-toast" role="status" aria-live="polite">
-      Problem statement received! We'll reach out within 48 hours.
-    </div>
     <div class="toast" id="join-toast" role="status" aria-live="polite">
       Application received! We'll review it and get back to you soon.
     </div>

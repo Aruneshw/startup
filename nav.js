@@ -105,8 +105,8 @@ function injectSiteChrome() {
                 </span>
                 <span class="brand-wordmark">ZERO GRAVITY</span>
               </a>
-              <p class="footer-copy footer-tagline">Engineering Students Collective · Tamil Nadu, India 🇮🇳</p>
-              <p class="footer-copy">AI, hardware, cybersecurity, and full-stack systems built by students.</p>
+              <p class="footer-copy footer-tagline">Tech Freelance Ecosystem · Tamil Nadu, India 🇮🇳</p>
+              <p class="footer-copy">Connecting clients with student developers to solve real-world tech problems.</p>
             </div>
             <div class="footer-policy-col">
               <h3 class="footer-title">Policies</h3>
@@ -133,7 +133,13 @@ function injectSiteChrome() {
                   )
                   .join("")}
               </div>
-              <p class="footer-meta">Email: <a href="mailto:teamzerogravityorg@gmail.com">teamzerogravityorg@gmail.com</a></p>
+              <div class="footer-contact-info" style="margin-top: 1.5rem;">
+                <h4 style="font-size: 0.875rem; color: var(--color-text-muted); margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Reach Us</h4>
+                <p class="footer-meta" style="margin-bottom: 0.25rem;">📧 <a href="mailto:teamzerogravityorg@gmail.com">teamzerogravityorg@gmail.com</a></p>
+                <p class="footer-meta" style="margin-bottom: 0.25rem;">📞 <a href="tel:+919095736279">+91 90957 36279</a></p>
+                <p class="footer-meta" style="margin-bottom: 0.25rem;">📞 <a href="tel:+917539988669">+91 75399 88669</a></p>
+                <p class="footer-meta">📍 Tamil Nadu, India</p>
+              </div>
             </div>
           </div>
           <div class="footer-visitor-strip" aria-live="polite">
