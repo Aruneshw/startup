@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leaderboard | Team Zero Gravity</title>
+    <meta name="description" content="Top developers ranked by reputation, speed, and accuracy on the Zero Gravity competitive platform." />
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="./supabase-config.js" defer></script>
+    <script src="./nav.js" defer></script>
+    <script src="./animations.js" defer></script>
+    <script src="./auth.js" defer></script>
+    <script src="./visitor-counter.js" defer></script>
+    <script src="./leaderboard.js" defer></script>
+  </head>
+  <body>
+    <div id="site-nav"></div>
+
+    <main>
+      <section class="page-hero reveal">
+        <div class="container">
+          <span class="eyebrow">Leaderboard</span>
+          <h1 class="section-heading">Top <span class="gradient-text">Developers</span></h1>
+          <p class="page-hero-copy">Real-time rankings powered by reputation, accuracy, and speed.</p>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="container">
+          <div class="filter-bar" aria-label="Leaderboard filters">
+            <button class="filter-chip is-active" type="button" data-filter="global">Global</button>
+            <button class="filter-chip" type="button" data-filter="speed">Fastest</button>
+            <button class="filter-chip" type="button" data-filter="accuracy">Most Accurate</button>
+            <button class="filter-chip" type="button" data-filter="trusted">Most Trusted</button>
+          </div>
+
+          <div id="leaderboard-loading" style="text-align:center;padding:3rem;">Loading leaderboard…</div>
+          <div id="leaderboard-empty" style="text-align:center;display:none;padding:2rem;color:var(--text-muted);">
+            No ranked developers yet. Start solving problems to appear here!
+          </div>
+
+          <div class="zg-leaderboard-table-wrap" style="display:none;" id="leaderboard-wrap">
+            <table class="zg-leaderboard-table" id="leaderboard-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Developer</th>
+                  <th>Reputation</th>
+                  <th>Solved</th>
+                  <th>Accuracy</th>
+                  <th>Avg Rating</th>
+                  <th>Trust</th>
+                  <th>Badges</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboard-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal">
+        <div class="container">
+          <div class="cta-strip">
+            <div class="cta-strip-inner">
+              <div>
+                <h2 class="section-heading">Ready to compete?</h2>
+                <p>Solve real problems and climb the leaderboard.</p>
+              </div>
+              <a class="button button-dark" href="./problem-hub.html">Browse Problems</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+  </body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Developer Profile | Team Zero Gravity</title>
+    <meta name="description" content="View developer reputation, badges, and performance stats on Zero Gravity." />
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="./supabase-config.js" defer></script>
+    <script src="./nav.js" defer></script>
+    <script src="./animations.js" defer></script>
+    <script src="./auth.js" defer></script>
+    <script src="./visitor-counter.js" defer></script>
+    <script src="./developer-profile.js" defer></script>
+  </head>
+  <body>
+    <div id="site-nav"></div>
+
+    <main>
+      <section class="page-hero reveal" style="min-height:36vh;padding-bottom:2rem;">
+        <div class="container">
+          <div id="profile-header" class="zg-profile-header">
+            <div id="profile-loading" style="text-align:center;padding:2rem;">Loading profile…</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-tight reveal">
+        <div class="container">
+          <div class="zg-profile-stats-grid" id="profile-stats" style="display:none;"></div>
+        </div>
+      </section>
+
+      <section class="section-tight reveal">
+        <div class="container">
+          <h2 class="section-heading" style="font-size:1.4rem;">Badges</h2>
+          <div class="zg-badges-grid" id="profile-badges">
+            <p style="color:var(--text-muted);">No badges earned yet.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-tight reveal">
+        <div class="container">
+          <h2 class="section-heading" style="font-size:1.4rem;">Submission History</h2>
+          <div id="profile-submissions">
+            <p style="color:var(--text-muted);">No submissions yet.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+  </body>
+</html>

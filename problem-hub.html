@@ -15,6 +15,7 @@
     <script src="./animations.js" defer></script>
     <script src="./auth.js" defer></script>
     <script src="./visitor-counter.js" defer></script>
+    <script src="./submission-modal.js" defer></script>
     <script src="./problem-hub.js" defer></script>
   </head>
   <body>
@@ -24,8 +25,8 @@
       <section class="page-hero reveal">
         <div class="container">
           <span class="eyebrow">Problem Hub</span>
-          <h1 class="section-heading">Latest Problems</h1>
-          <p class="page-hero-copy">Real challenges from our clients waiting to be solved.</p>
+          <h1 class="section-heading">Latest <span class="gradient-text">Problems</span></h1>
+          <p class="page-hero-copy">Real challenges from our clients waiting to be solved. Compete, submit solutions, climb the leaderboard.</p>
         </div>
       </section>
 
@@ -34,6 +35,10 @@
           <div class="filter-bar" aria-label="Problem filters">
             <button class="filter-chip is-active" type="button" data-filter="Latest">Latest</button>
             <button class="filter-chip" type="button" data-filter="Popular">Popular</button>
+            <button class="filter-chip zg-diff-chip" type="button" data-filter="easy">Easy</button>
+            <button class="filter-chip zg-diff-chip" type="button" data-filter="medium">Medium</button>
+            <button class="filter-chip zg-diff-chip" type="button" data-filter="hard">Hard</button>
+            <button class="filter-chip zg-diff-chip" type="button" data-filter="critical">Critical</button>
           </div>
 
           <div id="problem-hub-loading" style="text-align: center; padding: 3rem;">
