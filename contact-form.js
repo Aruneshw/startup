@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     authNote.textContent =
-      "You can use this form normally without signing in.";
+      "Sign in with Google on the entry page first so we can connect your problem statement to your profile.";
   }
 
   function prefillFromAuth() {

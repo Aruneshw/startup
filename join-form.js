@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     authNote.textContent =
-      "You can apply normally without signing in.";
+      "Sign in with Google on the entry page first so we can connect your application to your profile.";
   }
 
   function prefillFromAuth() {

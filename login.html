@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In | Zero Gravity</title>
+    <meta
+      name="description"
+      content="Sign in with Google to enter Zero Gravity and access the platform."
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="./supabase-config.js" defer></script>
+    <script src="./animations.js" defer></script>
+    <script src="./auth.js" defer></script>
+  </head>
+  <body class="login-page">
+    <main class="login-main">
+      <section class="login-shell reveal">
+        <div class="login-panel">
+          <div class="logo-badge login-logo-shell">
+            <img class="hero-logo" src="./LOGO.png" alt="Zero Gravity logo" />
+          </div>
+          <p class="login-kicker">Zero Gravity Access</p>
+          <h1 class="login-title">Sign in to enter the platform</h1>
+          <p class="login-copy">
+            Use your Google account to continue into Zero Gravity, explore projects, and submit your join application.
+          </p>
+
+          <div class="login-feature-list" aria-hidden="true">
+            <div class="login-feature">
+              <span class="login-feature-icon">01</span>
+              <span>
+                <strong>Protected entry</strong>
+                <span>Every visitor signs in first, so the platform stays tied to real identities.</span>
+              </span>
+            </div>
+            <div class="login-feature">
+              <span class="login-feature-icon">02</span>
+              <span>
+                <strong>Projects and community</strong>
+                <span>Browse work, learn about the team, and move straight into the Join With Us flow.</span>
+              </span>
+            </div>
+            <div class="login-feature">
+              <span class="login-feature-icon">03</span>
+              <span>
+                <strong>One-click access</strong>
+                <span>No separate password is needed. Google sign-in is the only entry path.</span>
+              </span>
+            </div>
+          </div>
+
+          <button
+            class="auth-button auth-button-large login-google-button"
+            type="button"
+            data-auth-action="signin"
+            data-auth-login-button
+          >
+            <span class="login-google-chip">G</span>
+            <span>Sign in with Google</span>
+          </button>
+
+          <p class="login-status" data-auth-login-status>
+            Sign in with Google to access projects, the problem hub, and the join form.
+          </p>
+          <p class="login-note">
+            After sign-in, you will be redirected to the page you wanted to open.
+          </p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

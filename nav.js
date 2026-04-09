@@ -1,11 +1,10 @@
 const navigationLinks = [
   { label: "Home", href: "./index.html" },
-  { label: "About", href: "./about.html" },
+  { label: "About Us", href: "./about.html" },
   { label: "Services", href: "./services.html" },
-  { label: "Team", href: "./team.html" },
   { label: "Projects", href: "./projects.html" },
   { label: "Problem Hub", href: "./problem-hub.html" },
-  { label: "Contact", href: "./contact.html" },
+  { label: "Join With Us", href: "./join.html" },
 ];
 
 const policyLinks = [
@@ -53,8 +52,8 @@ function getSocialIcon(type) {
 function createNavLinks(className = "nav-link") {
   return navigationLinks
     .map(
-      ({ label, href }) =>
-        `<a class="${className}" href="${href}">${label}</a>`
+      ({ label, href }, index) =>
+        `<a class="${className}" href="${href}" style="--nav-index:${index}">${label}</a>`
     )
     .join("");
 }
@@ -79,14 +78,14 @@ function injectSiteChrome() {
           <div class="nav-actions">
             <div class="auth-slot desktop-auth" id="nav-auth-desktop"></div>
             <button class="nav-signin" type="button" data-auth-action="signin">Sign in with Google</button>
-            <a class="nav-cta" href="./contact.html">Let's Talk</a>
+            <a class="nav-cta" href="./join.html#registration-process">Join Now</a>
             <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="Open navigation menu">☰</button>
           </div>
         </div>
       </header>
       <nav class="nav-overlay" id="mobile-nav" aria-label="Mobile navigation">
         ${createNavLinks("nav-link mobile-nav-link")}
-        <a class="nav-cta" href="./contact.html">Let's Talk</a>
+        <a class="nav-cta" href="./join.html#registration-process">Join Now</a>
         <button class="nav-signin mobile-nav-signin" type="button" data-auth-action="signin">Sign in with Google</button>
         <div class="auth-slot mobile-auth" id="nav-auth-mobile"></div>
       </nav>

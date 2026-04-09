@@ -1,5 +1,7 @@
 (function () {
   const config = window.ZERO_GRAVITY_SUPABASE_CONFIG || {};
+  const LOGIN_FILE = "login.html";
+  const RETURN_TO_KEY = "zeroGravityReturnTo";
   let client = null;
   let currentUser = null;
 
@@ -10,6 +12,20 @@
       .replaceAll(">", "&gt;")
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#39;");
+  }
+
+  function normalizePathname(pathname) {
+    const cleaned = pathname.endsWith("/") ? `${pathname}index.html` : pathname;
+    const file = cleaned.split("/").filter(Boolean).pop();
+    return file || "index.html";
+  }
+
+  function getCurrentFile() {
+    return normalizePathname(window.location.pathname);
+  }
+
+  function isLoginPage() {
+    return getCurrentFile() === LOGIN_FILE;
   }
 
   function isConfigured() {
@@ -53,8 +69,88 @@
     return initials.join("") || name.slice(0, 2).toUpperCase();
   }
 
-  function getRedirectUrl() {
-    return `${window.location.origin}${window.location.pathname}`;
+  function sanitizeReturnTo(value) {
+    if (!value) {
+      return "";
+    }
+
+    try {
+      const url = new URL(value, window.location.origin);
+      const targetFile = normalizePathname(url.pathname);
+
+      if (url.origin !== window.location.origin || targetFile === LOGIN_FILE) {
+        return "";
+      }
+
+      return `${url.pathname}${url.search}${url.hash}`;
+    } catch {
+      return "";
+    }
+  }
+
+  function getRequestedPath() {
+    const searchParams = new URLSearchParams(window.location.search);
+    const fromQuery = sanitizeReturnTo(searchParams.get("returnTo"));
+    const fromStorage = sanitizeReturnTo(window.localStorage.getItem(RETURN_TO_KEY));
+    return fromQuery || fromStorage || "./index.html";
+  }
+
+  function rememberReturnTo(value) {
+    const safeValue = sanitizeReturnTo(value);
+
+    if (!safeValue) {
+      return;
+    }
+
+    window.localStorage.setItem(RETURN_TO_KEY, safeValue);
+  }
+
+  function clearReturnTo() {
+    window.localStorage.removeItem(RETURN_TO_KEY);
+  }
+
+  function getLoginUrl(returnTo = `${window.location.pathname}${window.location.search}${window.location.hash}`) {
+    const loginUrl = new URL(`./${LOGIN_FILE}`, window.location.href);
+    const safeReturnTo = sanitizeReturnTo(returnTo);
+
+    if (safeReturnTo) {
+      loginUrl.searchParams.set("returnTo", safeReturnTo);
+    }
+
+    return loginUrl.toString();
+  }
+
+  function getOAuthRedirectUrl() {
+    const loginUrl = new URL(`./${LOGIN_FILE}`, window.location.href);
+    const targetPath = getRequestedPath();
+
+    if (targetPath) {
+      loginUrl.searchParams.set("returnTo", targetPath);
+    }
+
+    return loginUrl.toString();
+  }
+
+  function updateLoginStatus(message) {
+    document.querySelectorAll("[data-auth-login-status]").forEach((node) => {
+      node.textContent = message;
+    });
+  }
+
+  function releasePageLock() {
+    document.body?.classList.remove("auth-checking");
+    document.body?.classList.remove("auth-locked");
+  }
+
+  function redirectToLogin(returnTo = `${window.location.pathname}${window.location.search}${window.location.hash}`) {
+    rememberReturnTo(returnTo);
+    window.location.replace(getLoginUrl(returnTo));
+  }
+
+  function redirectToRequestedPage() {
+    const targetPath = getRequestedPath();
+    clearReturnTo();
+    window.location.replace(targetPath || "./index.html");
   }
 
   function announceAuthChange() {
@@ -164,8 +260,38 @@
     });
   }
 
+  function renderLoginPage() {
+    if (!isLoginPage()) {
+      return;
+    }
+
+    const loginButton = document.querySelector("[data-auth-login-button]");
+
+    if (!isConfigured()) {
+      if (loginButton) {
+        loginButton.disabled = true;
+      }
+      updateLoginStatus("Google sign-in is not available until Supabase is configured correctly.");
+      return;
+    }
+
+    if (currentUser) {
+      if (loginButton) {
+        loginButton.disabled = true;
+      }
+      updateLoginStatus(`Signed in as ${getDisplayName(currentUser)}. Taking you into Zero Gravity now...`);
+      return;
+    }
+
+    if (loginButton) {
+      loginButton.disabled = false;
+    }
+    updateLoginStatus("Sign in with Google to access projects, the problem hub, and the join form.");
+  }
+
   async function handleSignIn() {
     if (!client) {
+      updateLoginStatus("Google sign-in is not available yet. Please finish the Supabase setup first.");
       return;
     }
 
@@ -176,10 +302,13 @@
       return;
     }
 
+    rememberReturnTo(getRequestedPath());
+    updateLoginStatus("Redirecting you to Google sign-in...");
+
     const { error } = await client.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: getRedirectUrl(),
+        redirectTo: getOAuthRedirectUrl(),
         queryParams: {
           prompt: "select_account",
         },
@@ -188,6 +317,7 @@
 
     if (error) {
       console.warn("Zero Gravity sign-in failed:", error.message);
+      updateLoginStatus("Google sign-in could not start. Please try again.");
     }
   }
 
@@ -196,19 +326,33 @@
       return;
     }
 
+    const currentPath = `${window.location.pathname}${window.location.search}${window.location.hash}`;
     const { error } = await client.auth.signOut();
 
     if (error) {
       console.warn("Zero Gravity sign-out failed:", error.message);
+      return;
     }
+
+    redirectToLogin(currentPath);
   }
 
   function bindAuthButtons() {
     document.querySelectorAll("[data-auth-action='signin']").forEach((button) => {
+      if (button.dataset.authBound === "true") {
+        return;
+      }
+
+      button.dataset.authBound = "true";
       button.addEventListener("click", handleSignIn);
     });
 
     document.querySelectorAll("[data-auth-action='signout']").forEach((button) => {
+      if (button.dataset.authBound === "true") {
+        return;
+      }
+
+      button.dataset.authBound = "true";
       button.addEventListener("click", handleSignOut);
     });
   }
@@ -228,15 +372,26 @@
     document.querySelectorAll("[data-auth-summary]").forEach(renderAuthSummary);
     updateAuthGreeting();
     updateSignInButtons();
+    renderLoginPage();
     bindAuthButtons();
   }
 
   async function initAuth() {
+    if (!isLoginPage()) {
+      document.body?.classList.add("auth-checking");
+    }
+
     renderAuth();
 
     if (!isConfigured()) {
-      renderAuth();
       announceAuthChange();
+
+      if (!isLoginPage()) {
+        redirectToLogin();
+        return;
+      }
+
+      renderAuth();
       return;
     }
 
@@ -260,6 +415,18 @@
     renderAuth();
     announceAuthChange();
 
+    if (isLoginPage() && currentUser) {
+      redirectToRequestedPage();
+      return;
+    }
+
+    if (!isLoginPage() && !currentUser) {
+      redirectToLogin();
+      return;
+    }
+
+    releasePageLock();
+
     client.auth.onAuthStateChange(async (_event, nextSession) => {
       currentUser = nextSession?.user || null;
 
@@ -269,6 +436,18 @@
 
       renderAuth();
       announceAuthChange();
+
+      if (isLoginPage() && currentUser) {
+        redirectToRequestedPage();
+        return;
+      }
+
+      if (!isLoginPage() && !currentUser) {
+        redirectToLogin();
+        return;
+      }
+
+      releasePageLock();
     });
   }
 
@@ -282,6 +461,7 @@
     getDisplayName,
     getInitials,
     isConfigured,
+    signIn: handleSignIn,
   };
 
   document.addEventListener("DOMContentLoaded", initAuth);
