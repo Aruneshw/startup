@@ -4,31 +4,75 @@ create table if not exists public.zg_profiles (
   full_name text,
   avatar_url text,
   last_seen_at timestamptz default now(),
-  created_at timestamptz default now()
+  created_at timestamptz default now(),
+  is_blocked boolean not null default false
 );
 
 alter table public.zg_profiles enable row level security;
 
+alter table public.zg_profiles
+  add column if not exists is_blocked boolean not null default false;
+
+create or replace function public.zg_current_user_is_allowed()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select
+    case
+      when auth.uid() is null then false
+      else coalesce(
+        (
+          select not coalesce(profile.is_blocked, false)
+          from public.zg_profiles as profile
+          where profile.id = auth.uid()
+             or lower(coalesce(profile.email, '')) = lower(coalesce(auth.jwt() ->> 'email', ''))
+          order by case when profile.id = auth.uid() then 0 else 1 end
+          limit 1
+        ),
+        true
+      )
+    end;
+$$;
+
+grant execute on function public.zg_current_user_is_allowed() to anon, authenticated;
+
+drop policy if exists "Users can read own profile or blocked status" on public.zg_profiles;
 drop policy if exists "Users can read own profile" on public.zg_profiles;
-create policy "Users can read own profile"
+create policy "Users can read own profile or blocked status"
 on public.zg_profiles
 for select
 to authenticated
-using (auth.uid() = id);
+using (
+  auth.uid() = id
+  or lower(coalesce(email, '')) = lower(coalesce(auth.jwt() ->> 'email', ''))
+);
 
 drop policy if exists "Users can insert own profile" on public.zg_profiles;
 create policy "Users can insert own profile"
 on public.zg_profiles
 for insert
 to authenticated
-with check (auth.uid() = id);
+with check (
+  auth.uid() = id
+  and public.zg_current_user_is_allowed()
+);
 
 drop policy if exists "Users can update own profile" on public.zg_profiles;
 create policy "Users can update own profile"
 on public.zg_profiles
 for update
 to authenticated
-using (auth.uid() = id);
+using (
+  auth.uid() = id
+  and public.zg_current_user_is_allowed()
+)
+with check (
+  auth.uid() = id
+  and public.zg_current_user_is_allowed()
+);
 
 create table if not exists public.zg_client_problem_statements (
   id bigint generated always as identity primary key,
@@ -49,19 +93,24 @@ create table if not exists public.zg_client_problem_statements (
 
 alter table public.zg_client_problem_statements enable row level security;
 
+drop policy if exists "Allowed users can insert problem statements" on public.zg_client_problem_statements;
 drop policy if exists "Allow public problem statement inserts" on public.zg_client_problem_statements;
-create policy "Allow public problem statement inserts"
+create policy "Allowed users can insert problem statements"
 on public.zg_client_problem_statements
 for insert
-to anon, authenticated
-with check (true);
+to authenticated
+with check (
+  public.zg_current_user_is_allowed()
+  and (auth_user_id is null or auth_user_id = auth.uid())
+);
 
+drop policy if exists "Allowed users can read problem statements" on public.zg_client_problem_statements;
 drop policy if exists "Allow public read of problem statements" on public.zg_client_problem_statements;
-create policy "Allow public read of problem statements"
+create policy "Allowed users can read problem statements"
 on public.zg_client_problem_statements
 for select
-to anon, authenticated
-using (true);
+to authenticated
+using (public.zg_current_user_is_allowed());
 
 create table if not exists public.zg_member_interest (
   id bigint generated always as identity primary key,
@@ -120,19 +169,28 @@ update public.zg_member_interest
 set approval_status = 'pending'
 where approval_status is null;
 
+drop policy if exists "Allowed users can insert member interest" on public.zg_member_interest;
 drop policy if exists "Allow public member interest inserts" on public.zg_member_interest;
-create policy "Allow public member interest inserts"
+create policy "Allowed users can insert member interest"
 on public.zg_member_interest
 for insert
-to anon, authenticated
-with check (true);
+to authenticated
+with check (
+  public.zg_current_user_is_allowed()
+  and (auth_user_id is null or auth_user_id = auth.uid())
+);
 
+drop policy if exists "Allowed users can read approved members" on public.zg_member_interest;
 drop policy if exists "Allow public read of approved members" on public.zg_member_interest;
-create policy "Allow public read of approved members"
+create policy "Allowed users can read approved members"
 on public.zg_member_interest
 for select
-to anon, authenticated
-using (approval_status = 'approved' and show_on_team_page = true);
+to authenticated
+using (
+  public.zg_current_user_is_allowed()
+  and approval_status = 'approved'
+  and show_on_team_page = true
+);
 
 create table if not exists public.zg_site_metrics (
   metric_key text primary key,
@@ -145,12 +203,13 @@ alter table public.zg_site_metrics enable row level security;
 alter table public.zg_site_metrics
   add column if not exists updated_at timestamptz not null default now();
 
+drop policy if exists "Allowed users can read site metrics" on public.zg_site_metrics;
 drop policy if exists "Allow public read of site metrics" on public.zg_site_metrics;
-create policy "Allow public read of site metrics"
+create policy "Allowed users can read site metrics"
 on public.zg_site_metrics
 for select
-to anon, authenticated
-using (true);
+to authenticated
+using (public.zg_current_user_is_allowed());
 
 insert into public.zg_site_metrics (metric_key, metric_value, updated_at)
 values ('site_visits', 0, now())
@@ -165,6 +224,10 @@ as $$
 declare
   next_count bigint;
 begin
+  if not public.zg_current_user_is_allowed() then
+    return 0;
+  end if;
+
   insert into public.zg_site_metrics (metric_key, metric_value, updated_at)
   values ('site_visits', 1, now())
   on conflict (metric_key) do update
@@ -178,22 +241,30 @@ $$;
 
 create or replace function public.get_zg_visitor_count()
 returns bigint
-language sql
+language plpgsql
 security definer
 set search_path = public
 as $$
-  select coalesce(
-    (
-      select metric_value
-      from public.zg_site_metrics
-      where metric_key = 'site_visits'
-    ),
-    0
-  );
+declare
+  current_count bigint;
+begin
+  if not public.zg_current_user_is_allowed() then
+    return 0;
+  end if;
+
+  select coalesce(metric_value, 0)
+  into current_count
+  from public.zg_site_metrics
+  where metric_key = 'site_visits';
+
+  return coalesce(current_count, 0);
+end;
 $$;
 
-grant execute on function public.increment_zg_visitor_count() to anon, authenticated;
-grant execute on function public.get_zg_visitor_count() to anon, authenticated;
+revoke execute on function public.increment_zg_visitor_count() from anon;
+revoke execute on function public.get_zg_visitor_count() from anon;
+grant execute on function public.increment_zg_visitor_count() to authenticated;
+grant execute on function public.get_zg_visitor_count() to authenticated;
 
 -- ============================================================
 -- COMPETITIVE PLATFORM EXTENSIONS
@@ -226,25 +297,45 @@ create table if not exists public.zg_submissions (
 
 alter table public.zg_submissions enable row level security;
 
+drop policy if exists "Allowed users see own or unblinded submissions" on public.zg_submissions;
 drop policy if exists "Devs see own or unblinded submissions" on public.zg_submissions;
-create policy "Devs see own or unblinded submissions"
+create policy "Allowed users see own or unblinded submissions"
   on public.zg_submissions for select to authenticated
-  using (developer_id = auth.uid() or is_blind = false);
+  using (
+    public.zg_current_user_is_allowed()
+    and (developer_id = auth.uid() or is_blind = false)
+  );
 
+drop policy if exists "Allowed users can see accepted submissions" on public.zg_submissions;
 drop policy if exists "Public can see accepted submissions" on public.zg_submissions;
-create policy "Public can see accepted submissions"
-  on public.zg_submissions for select to anon, authenticated
-  using (status = 'accepted');
+create policy "Allowed users can see accepted submissions"
+  on public.zg_submissions for select to authenticated
+  using (
+    public.zg_current_user_is_allowed()
+    and status = 'accepted'
+  );
 
+drop policy if exists "Allowed users can insert own solutions" on public.zg_submissions;
 drop policy if exists "Devs insert own solutions" on public.zg_submissions;
-create policy "Devs insert own solutions"
+create policy "Allowed users can insert own solutions"
   on public.zg_submissions for insert to authenticated
-  with check (developer_id = auth.uid());
+  with check (
+    public.zg_current_user_is_allowed()
+    and developer_id = auth.uid()
+  );
 
+drop policy if exists "Allowed users can update own solutions" on public.zg_submissions;
 drop policy if exists "Devs update own solutions" on public.zg_submissions;
-create policy "Devs update own solutions"
+create policy "Allowed users can update own solutions"
   on public.zg_submissions for update to authenticated
-  using (developer_id = auth.uid());
+  using (
+    public.zg_current_user_is_allowed()
+    and developer_id = auth.uid()
+  )
+  with check (
+    public.zg_current_user_is_allowed()
+    and developer_id = auth.uid()
+  );
 
 -- 3. Reputation, trust, and stat columns on zg_member_interest
 alter table public.zg_member_interest
@@ -271,9 +362,11 @@ create table if not exists public.zg_badges (
 
 alter table public.zg_badges enable row level security;
 
+drop policy if exists "Allowed users can read badges" on public.zg_badges;
 drop policy if exists "Public badge read" on public.zg_badges;
-create policy "Public badge read"
-  on public.zg_badges for select to anon, authenticated using (true);
+create policy "Allowed users can read badges"
+  on public.zg_badges for select to authenticated
+  using (public.zg_current_user_is_allowed());
 
 create table if not exists public.zg_user_badges (
   id       uuid primary key default gen_random_uuid(),
@@ -285,9 +378,11 @@ create table if not exists public.zg_user_badges (
 
 alter table public.zg_user_badges enable row level security;
 
+drop policy if exists "Allowed users can read user badges" on public.zg_user_badges;
 drop policy if exists "Public user badge read" on public.zg_user_badges;
-create policy "Public user badge read"
-  on public.zg_user_badges for select to anon, authenticated using (true);
+create policy "Allowed users can read user badges"
+  on public.zg_user_badges for select to authenticated
+  using (public.zg_current_user_is_allowed());
 
 create table if not exists public.zg_badge_progress (
   user_id    uuid not null,
@@ -299,9 +394,11 @@ create table if not exists public.zg_badge_progress (
 
 alter table public.zg_badge_progress enable row level security;
 
+drop policy if exists "Allowed users can read badge progress" on public.zg_badge_progress;
 drop policy if exists "Public progress read" on public.zg_badge_progress;
-create policy "Public progress read"
-  on public.zg_badge_progress for select to anon, authenticated using (true);
+create policy "Allowed users can read badge progress"
+  on public.zg_badge_progress for select to authenticated
+  using (public.zg_current_user_is_allowed());
 
 -- 5. Solution tags table
 create table if not exists public.zg_solution_tags (
@@ -314,9 +411,11 @@ create table if not exists public.zg_solution_tags (
 
 alter table public.zg_solution_tags enable row level security;
 
+drop policy if exists "Allowed users can read solution tags" on public.zg_solution_tags;
 drop policy if exists "Public tag read" on public.zg_solution_tags;
-create policy "Public tag read"
-  on public.zg_solution_tags for select to anon, authenticated using (true);
+create policy "Allowed users can read solution tags"
+  on public.zg_solution_tags for select to authenticated
+  using (public.zg_current_user_is_allowed());
 
 -- 6. Seed starter badges
 insert into public.zg_badges (name, category, level, criteria, icon) values
@@ -346,11 +445,12 @@ alter table public.zg_workspaces enable row level security;
 
 drop policy if exists "Owner can manage workspace" on public.zg_workspaces;
 drop policy if exists "Public can read workspaces" on public.zg_workspaces;
+drop policy if exists "Allowed users can manage workspaces" on public.zg_workspaces;
 drop policy if exists "Anyone can manage workspaces" on public.zg_workspaces;
-create policy "Anyone can manage workspaces"
-  on public.zg_workspaces for all to anon, authenticated
-  using (true)
-  with check (true);
+create policy "Allowed users can manage workspaces"
+  on public.zg_workspaces for all to authenticated
+  using (public.zg_current_user_is_allowed())
+  with check (public.zg_current_user_is_allowed());
 
 create table if not exists public.zg_workspace_nodes (
   id            uuid primary key default gen_random_uuid(),
@@ -372,9 +472,9 @@ alter table public.zg_workspace_nodes enable row level security;
 
 drop policy if exists "Workspace members manage nodes" on public.zg_workspace_nodes;
 drop policy if exists "Public can read nodes" on public.zg_workspace_nodes;
+drop policy if exists "Allowed users can manage nodes" on public.zg_workspace_nodes;
 drop policy if exists "Anyone can manage nodes" on public.zg_workspace_nodes;
-create policy "Anyone can manage nodes"
-  on public.zg_workspace_nodes for all to anon, authenticated
-  using (true)
-  with check (true);
-
+create policy "Allowed users can manage nodes"
+  on public.zg_workspace_nodes for all to authenticated
+  using (public.zg_current_user_is_allowed())
+  with check (public.zg_current_user_is_allowed());

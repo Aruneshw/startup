@@ -1,9 +1,18 @@
 (function () {
   const config = window.ZERO_GRAVITY_SUPABASE_CONFIG || {};
   const LOGIN_FILE = "login.html";
+  const ACCESS_DENIED_FILE = "access-denied.html";
   const RETURN_TO_KEY = "zeroGravityReturnTo";
   let client = null;
   let currentUser = null;
+  let currentProfile = null;
+  let isBlockedUser = false;
+  let isBlockedRedirectInFlight = false;
+  let resolveAuthReady = () => {};
+  let authReady = false;
+  const authReadyPromise = new Promise((resolve) => {
+    resolveAuthReady = resolve;
+  });
 
   function escapeHtml(value) {
     return String(value)
@@ -28,6 +37,23 @@
     return getCurrentFile() === LOGIN_FILE;
   }
 
+  function isAccessDeniedPage() {
+    return getCurrentFile() === ACCESS_DENIED_FILE;
+  }
+
+  function isProtectedPage() {
+    return !isLoginPage() && !isAccessDeniedPage();
+  }
+
+  function markAuthReady() {
+    if (authReady) {
+      return;
+    }
+
+    authReady = true;
+    resolveAuthReady();
+  }
+
   function isConfigured() {
     return Boolean(
       config.url &&
@@ -39,6 +65,10 @@
 
   function canUseBrowserOAuth() {
     return window.location.protocol === "http:" || window.location.protocol === "https:";
+  }
+
+  function normalizeEmail(value) {
+    return String(value || "").trim().toLowerCase();
   }
 
   function getDisplayName(user = currentUser) {
@@ -120,6 +150,10 @@
     return loginUrl.toString();
   }
 
+  function getAccessDeniedUrl() {
+    return new URL(`./${ACCESS_DENIED_FILE}`, window.location.href).toString();
+  }
+
   function getOAuthRedirectUrl() {
     const loginUrl = new URL(`./${LOGIN_FILE}`, window.location.href);
     const targetPath = getRequestedPath();
@@ -147,6 +181,17 @@
     window.location.replace(getLoginUrl(returnTo));
   }
 
+  function redirectToAccessDenied() {
+    clearReturnTo();
+
+    if (isAccessDeniedPage()) {
+      releasePageLock();
+      return;
+    }
+
+    window.location.replace(getAccessDeniedUrl());
+  }
+
   function redirectToRequestedPage() {
     const targetPath = getRequestedPath();
     clearReturnTo();
@@ -171,7 +216,7 @@
 
     const payload = {
       id: user.id,
-      email: user.email || null,
+      email: normalizeEmail(user.email) || null,
       full_name: getDisplayName(user),
       avatar_url: user.user_metadata?.avatar_url || null,
       last_seen_at: new Date().toISOString(),
@@ -184,6 +229,97 @@
     if (error) {
       console.warn("Zero Gravity profile sync skipped:", error.message);
     }
+  }
+
+  async function loadProfile(user) {
+    if (!client || !user) {
+      return null;
+    }
+
+    const profilesTable = config.profilesTable || "zg_profiles";
+
+    const {
+      data: ownProfile,
+      error: ownProfileError,
+    } = await client
+      .from(profilesTable)
+      .select("id, email, is_blocked")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    if (ownProfileError) {
+      console.warn("Zero Gravity profile lookup failed:", ownProfileError.message);
+    }
+
+    if (ownProfile) {
+      return ownProfile;
+    }
+
+    const email = normalizeEmail(user.email);
+
+    if (!email) {
+      return null;
+    }
+
+    const {
+      data: emailMatches,
+      error: emailLookupError,
+    } = await client
+      .from(profilesTable)
+      .select("id, email, is_blocked")
+      .ilike("email", email)
+      .limit(1);
+
+    if (emailLookupError) {
+      console.warn("Zero Gravity email lookup failed:", emailLookupError.message);
+      return null;
+    }
+
+    return emailMatches?.[0] || null;
+  }
+
+  async function handleBlockedUser() {
+    if (isBlockedRedirectInFlight) {
+      return;
+    }
+
+    isBlockedRedirectInFlight = true;
+    isBlockedUser = true;
+    currentUser = null;
+    currentProfile = null;
+    updateLoginStatus("This Google account does not have access to Zero Gravity.");
+    renderAuth();
+    announceAuthChange();
+    markAuthReady();
+
+    if (client) {
+      const { error } = await client.auth.signOut();
+
+      if (error) {
+        console.warn("Zero Gravity blocked-user sign-out failed:", error.message);
+      }
+    }
+
+    redirectToAccessDenied();
+  }
+
+  async function syncProfileAndCheckAccess(user) {
+    currentProfile = await loadProfile(user);
+    isBlockedUser = Boolean(currentProfile?.is_blocked);
+
+    if (isBlockedUser) {
+      await handleBlockedUser();
+      return false;
+    }
+
+    await upsertProfile(user);
+    currentProfile = currentProfile || {
+      id: user.id,
+      email: normalizeEmail(user.email) || null,
+      is_blocked: false,
+    };
+
+    return true;
   }
 
   function renderAuthSlot(slot) {
@@ -376,22 +512,53 @@
     bindAuthButtons();
   }
 
+  function finalizeAuthState() {
+    renderAuth();
+    announceAuthChange();
+    markAuthReady();
+
+    if (isBlockedRedirectInFlight) {
+      return;
+    }
+
+    if (isLoginPage() && currentUser) {
+      redirectToRequestedPage();
+      return;
+    }
+
+    if (isProtectedPage() && !currentUser) {
+      redirectToLogin();
+      return;
+    }
+
+    releasePageLock();
+  }
+
+  async function applySession(session) {
+    currentUser = session?.user || null;
+    currentProfile = null;
+    isBlockedUser = false;
+
+    if (currentUser) {
+      const hasAccess = await syncProfileAndCheckAccess(currentUser);
+
+      if (!hasAccess) {
+        return;
+      }
+    }
+
+    finalizeAuthState();
+  }
+
   async function initAuth() {
-    if (!isLoginPage()) {
+    if (isProtectedPage()) {
       document.body?.classList.add("auth-checking");
     }
 
     renderAuth();
 
     if (!isConfigured()) {
-      announceAuthChange();
-
-      if (!isLoginPage()) {
-        redirectToLogin();
-        return;
-      }
-
-      renderAuth();
+      finalizeAuthState();
       return;
     }
 
@@ -406,61 +573,36 @@
       console.warn("Zero Gravity session check failed:", error.message);
     }
 
-    currentUser = session?.user || null;
-
-    if (currentUser) {
-      await upsertProfile(currentUser);
-    }
-
-    renderAuth();
-    announceAuthChange();
-
-    if (isLoginPage() && currentUser) {
-      redirectToRequestedPage();
-      return;
-    }
-
-    if (!isLoginPage() && !currentUser) {
-      redirectToLogin();
-      return;
-    }
-
-    releasePageLock();
+    await applySession(session);
 
     client.auth.onAuthStateChange(async (_event, nextSession) => {
-      currentUser = nextSession?.user || null;
-
-      if (currentUser) {
-        await upsertProfile(currentUser);
-      }
-
-      renderAuth();
-      announceAuthChange();
-
-      if (isLoginPage() && currentUser) {
-        redirectToRequestedPage();
-        return;
-      }
-
-      if (!isLoginPage() && !currentUser) {
-        redirectToLogin();
-        return;
-      }
-
-      releasePageLock();
+      await applySession(nextSession);
     });
   }
 
   window.ZeroGravityAuth = {
     getClient() {
+      if (!client || !currentUser || isBlockedUser || isBlockedRedirectInFlight) {
+        return null;
+      }
+
       return client;
     },
     getUser() {
       return currentUser;
     },
+    getProfile() {
+      return currentProfile;
+    },
     getDisplayName,
     getInitials,
     isConfigured,
+    isReady() {
+      return authReady;
+    },
+    waitForReady() {
+      return authReadyPromise;
+    },
     signIn: handleSignIn,
   };
 

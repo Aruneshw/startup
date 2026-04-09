@@ -1,13 +1,20 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const grid = document.getElementById("approved-members-grid");
   const emptyState = document.getElementById("approved-members-empty");
-  const config = window.ZERO_GRAVITY_SUPABASE_CONFIG || {};
 
-  if (!grid || !window.supabase || !config.url || !config.anonKey) {
+  if (!grid) {
     return;
   }
 
-  const client = window.supabase.createClient(config.url, config.anonKey);
+  if (window.ZeroGravityAuth?.waitForReady) {
+    await window.ZeroGravityAuth.waitForReady();
+  }
+
+  const client = window.ZeroGravityAuth?.getClient?.();
+
+  if (!client) {
+    return;
+  }
 
   function escapeHtml(value) {
     return String(value)

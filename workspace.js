@@ -1,6 +1,6 @@
 /**
  * workspace.js — Interactive mind-map workspace
- * Works WITHOUT authentication. Guest-friendly.
+ * Runs behind the Zero Gravity auth gate.
  */
 (function () {
   "use strict";
@@ -32,7 +32,11 @@
     projectNameEl = $("ws-project-name");
     saveStatusEl = $("ws-save-status");
 
-    // Get Supabase client (no auth required)
+    if (window.ZeroGravityAuth?.waitForReady) {
+      await window.ZeroGravityAuth.waitForReady();
+    }
+
+    // Get Supabase client after auth settles
     client = getClient();
 
     if (!client) {
@@ -52,12 +56,7 @@
   });
 
   function getClient() {
-    if (window.ZeroGravityAuth?.getClient()) return window.ZeroGravityAuth.getClient();
-    if (window.supabase && window.ZERO_GRAVITY_SUPABASE_CONFIG) {
-      const cfg = window.ZERO_GRAVITY_SUPABASE_CONFIG;
-      return window.supabase.createClient(cfg.url, cfg.anonKey);
-    }
-    return null;
+    return window.ZeroGravityAuth?.getClient?.() || null;
   }
 
   // ── Guest ID (persisted in localStorage) ───────────────────

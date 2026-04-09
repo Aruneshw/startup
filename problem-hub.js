@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const problemsGrid = document.getElementById("problems-grid");
   const loadingIndicator = document.getElementById("problem-hub-loading");
   const errorIndicator = document.getElementById("problem-hub-error");
@@ -10,13 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let allProblems = [];
 
   function getClient() {
-    const client = window.ZeroGravityAuth?.getClient();
-    if (client) return client;
-    if (window.supabase && window.ZERO_GRAVITY_SUPABASE_CONFIG) {
-      const cfg = window.ZERO_GRAVITY_SUPABASE_CONFIG;
-      return window.supabase.createClient(cfg.url, cfg.anonKey);
-    }
-    return null;
+    return window.ZeroGravityAuth?.getClient?.() || null;
   }
 
   function formatDate(isoString) {
@@ -180,6 +174,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   });
+
+  if (window.ZeroGravityAuth?.waitForReady) {
+    await window.ZeroGravityAuth.waitForReady();
+  }
 
   fetchProblems();
 });

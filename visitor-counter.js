@@ -89,6 +89,19 @@
     return window.supabase.createClient(config.url, config.anonKey);
   }
 
+  async function getSupabaseClient() {
+    if (window.ZeroGravityAuth?.waitForReady) {
+      await window.ZeroGravityAuth.waitForReady();
+      return window.ZeroGravityAuth.getClient?.() || null;
+    }
+
+    if (!isSupabaseReady()) {
+      return null;
+    }
+
+    return createClient();
+  }
+
   function shouldIncrement() {
     try {
       const lastHit = Number(window.localStorage.getItem(LAST_INCREMENT_KEY) || 0);
@@ -136,12 +149,17 @@
 
   async function loadVisitorCount() {
     const increment = shouldIncrement();
+    const hasProtectedAuthGate = Boolean(window.ZeroGravityAuth?.waitForReady);
 
-    if (!isSupabaseReady()) {
+    if (!hasProtectedAuthGate && !isSupabaseReady()) {
       return fallbackCount(increment);
     }
 
-    const client = createClient();
+    const client = await getSupabaseClient();
+
+    if (!client) {
+      return hasProtectedAuthGate ? getCachedCount() : fallbackCount(increment);
+    }
 
     if (increment) {
       const { data, error } = await client.rpc("increment_zg_visitor_count");

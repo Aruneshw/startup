@@ -15,13 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function getClient() {
-    const client = window.ZeroGravityAuth?.getClient();
-    if (client) return client;
-    if (window.supabase && window.ZERO_GRAVITY_SUPABASE_CONFIG) {
-      const cfg = window.ZERO_GRAVITY_SUPABASE_CONFIG;
-      return window.supabase.createClient(cfg.url, cfg.anonKey);
-    }
-    return null;
+    return window.ZeroGravityAuth?.getClient?.() || null;
   }
 
   function getInitials(name) {
@@ -212,5 +206,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  loadProfile();
+  const init = async () => {
+    if (window.ZeroGravityAuth?.waitForReady) {
+      await window.ZeroGravityAuth.waitForReady();
+    }
+
+    loadProfile();
+  };
+
+  init();
 });

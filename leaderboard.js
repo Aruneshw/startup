@@ -13,13 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let allDevs = [];
 
   function getClient() {
-    const client = window.ZeroGravityAuth?.getClient();
-    if (client) return client;
-    if (window.supabase && window.ZERO_GRAVITY_SUPABASE_CONFIG) {
-      const cfg = window.ZERO_GRAVITY_SUPABASE_CONFIG;
-      return window.supabase.createClient(cfg.url, cfg.anonKey);
-    }
-    return null;
+    return window.ZeroGravityAuth?.getClient?.() || null;
   }
 
   function renderLeaderboard(devs) {
@@ -139,5 +133,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  fetchLeaderboard();
+  const init = async () => {
+    if (window.ZeroGravityAuth?.waitForReady) {
+      await window.ZeroGravityAuth.waitForReady();
+    }
+
+    fetchLeaderboard();
+  };
+
+  init();
 });

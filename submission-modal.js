@@ -5,13 +5,7 @@
   "use strict";
 
   function getSupabaseClient() {
-    const client = window.ZeroGravityAuth?.getClient();
-    if (client) return client;
-    if (window.supabase && window.ZERO_GRAVITY_SUPABASE_CONFIG) {
-      const cfg = window.ZERO_GRAVITY_SUPABASE_CONFIG;
-      return window.supabase.createClient(cfg.url, cfg.anonKey);
-    }
-    return null;
+    return window.ZeroGravityAuth?.getClient?.() || null;
   }
 
   function createModal() {
@@ -71,6 +65,10 @@
     btn.textContent = "Submitting…";
 
     try {
+      if (window.ZeroGravityAuth?.waitForReady) {
+        await window.ZeroGravityAuth.waitForReady();
+      }
+
       const client = getSupabaseClient();
       if (!client) throw new Error("Not connected to backend");
 
