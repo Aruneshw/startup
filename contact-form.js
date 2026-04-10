@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const errorNodes = form.querySelectorAll("[data-error-for]");
 
-  const requiredFields = [
+  const allPossibleRequiredFields = [
     { name: "fullName", message: "Please enter your full name." },
     { name: "email", message: "Please enter a valid email address." },
     { name: "projectType", message: "Please choose a project type." },
@@ -18,6 +18,9 @@ document.addEventListener("DOMContentLoaded", () => {
       message: "Please describe the problem statement or idea clearly.",
     },
   ];
+
+  // Only require fields that actually exist in the current form
+  const requiredFields = allPossibleRequiredFields.filter(f => form.elements.namedItem(f.name) !== null);
 
   function setError(name, message = "") {
     const errorNode = form.querySelector(`[data-error-for="${name}"]`);

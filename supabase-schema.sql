@@ -478,3 +478,19 @@ create policy "Allowed users can manage nodes"
   on public.zg_workspace_nodes for all to authenticated
   using (public.zg_current_user_is_allowed())
   with check (public.zg_current_user_is_allowed());
+
+create table if not exists public.zg_workspace_edges (
+  id            uuid primary key default gen_random_uuid(),
+  workspace_id  uuid references public.zg_workspaces(id) on delete cascade,
+  source_id     uuid references public.zg_workspace_nodes(id) on delete cascade,
+  target_id     uuid references public.zg_workspace_nodes(id) on delete cascade,
+  created_at    timestamptz default now()
+);
+
+alter table public.zg_workspace_edges enable row level security;
+
+drop policy if exists "Allowed users can manage edges" on public.zg_workspace_edges;
+create policy "Allowed users can manage edges"
+  on public.zg_workspace_edges for all to authenticated
+  using (public.zg_current_user_is_allowed())
+  with check (public.zg_current_user_is_allowed());

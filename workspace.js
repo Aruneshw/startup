@@ -8,6 +8,7 @@
   // ── State ──────────────────────────────────────────────────
   let workspace = null;
   let nodes = [];
+  let edges = [];
   let client = null;
   let activeEditorNode = null;
   let cmInstance = null;
@@ -19,6 +20,13 @@
   let selectedType = "code";
   const CENTER_X = 0;
   const CENTER_Y = 0;
+
+  // Wiring state
+  let isWiring = false;
+  let wiringStartNodeId = null;
+  let wiringStartPort = null;
+  let wiringCurrentX = 0;
+  let wiringCurrentY = 0;
 
   const $ = (id) => document.getElementById(id);
 
@@ -124,6 +132,14 @@
       .order("sort_order", { ascending: true });
 
     nodes = nodeData || [];
+
+    // Load edges
+    const { data: edgeData } = await client
+      .from("zg_workspace_edges")
+      .select("*")
+      .eq("workspace_id", workspace.id);
+
+    edges = edgeData || [];
   }
 
   // ── Rendering ──────────────────────────────────────────────
@@ -169,6 +185,10 @@
       const langBadge = node.node_type === "code" ? `<span class="ws-lang-badge">${node.language || "js"}</span>` : "";
 
       el.innerHTML = `
+        <div class="ws-node-port ws-node-port-left" data-port="left"></div>
+        <div class="ws-node-port ws-node-port-right" data-port="right"></div>
+        <div class="ws-node-port ws-node-port-top" data-port="top"></div>
+        <div class="ws-node-port ws-node-port-bottom" data-port="bottom"></div>
         <div class="ws-node-header-row">
           <span class="ws-node-icon">${icon}</span>
           <span class="ws-node-label">${esc(node.label)}</span>
@@ -181,7 +201,8 @@
 
       // Click → open editor
       el.addEventListener("click", (e) => {
-        if (el.classList.contains("is-dragging")) return;
+        if (el.classList.contains("is-dragging") || isWiring) return;
+        if (e.target.classList.contains("ws-node-port")) return;
         e.stopPropagation();
         openEditor(node);
       });
@@ -200,35 +221,68 @@
     const h = window.innerHeight * 4;
     svgEl.setAttribute("viewBox", `${-w / 2} ${-h / 2} ${w} ${h}`);
 
-    // Arrow marker
+    // Arrow marker & delete style
     const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
     defs.innerHTML = `
       <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
-        <polygon points="0 0, 8 3, 0 6" fill="rgba(0,245,212,0.5)" />
+        <polygon points="0 0, 8 3, 0 6" fill="rgba(0,245,212,0.8)" />
       </marker>
-      <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" style="stop-color:rgba(0,245,212,0.4)"/>
-        <stop offset="100%" style="stop-color:rgba(57,255,20,0.3)"/>
-      </linearGradient>
     `;
     svgEl.appendChild(defs);
 
-    nodes.forEach((node) => {
-      const toX = node.position_x;
-      const toY = node.position_y;
-
-      // Curved bezier from center to node
-      const dx = toX - CENTER_X;
-      const dy = toY - CENTER_Y;
-      const ctrlX = CENTER_X + dx * 0.5 + dy * 0.12;
-      const ctrlY = CENTER_Y + dy * 0.5 - dx * 0.12;
+    // Render persisted edges
+    edges.forEach((edge) => {
+      const source = nodes.find(n => n.id === edge.source_id);
+      const target = nodes.find(n => n.id === edge.target_id);
+      if (!source || !target) return;
 
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      path.setAttribute("d", `M ${CENTER_X} ${CENTER_Y} Q ${ctrlX} ${ctrlY} ${toX} ${toY}`);
+      path.setAttribute("d", getPathStrForNodes(source, target));
       path.setAttribute("class", "ws-connection-line");
       path.setAttribute("marker-end", "url(#arrowhead)");
+      
+      // Make clickable to delete
+      path.style.cursor = "pointer";
+      path.style.pointerEvents = "all";
+      path.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        deleteEdge(edge.id);
+      });
+      path.addEventListener("dblclick", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        deleteEdge(edge.id);
+      });
       svgEl.appendChild(path);
     });
+
+    // Render active wiring path
+    if (isWiring && wiringStartNodeId) {
+      const source = nodes.find(n => n.id === wiringStartNodeId);
+      if (source) {
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", getPathStr(source.position_x, source.position_y, wiringCurrentX, wiringCurrentY));
+        path.setAttribute("class", "ws-connection-line");
+        path.setAttribute("style", "stroke: rgba(0, 245, 212, 1); stroke-width: 3px; border-style: dashed;");
+        svgEl.appendChild(path);
+      }
+    }
+  }
+
+  function getPathStrForNodes(source, target) {
+    return getPathStr(source.position_x, source.position_y, target.position_x, target.position_y);
+  }
+
+  function getPathStr(x1, y1, x2, y2) {
+    // Cubic bezier curve for a flowing mind-map look
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const ctrl1X = x1 + dx * 0.5;
+    const ctrl1Y = y1;
+    const ctrl2X = x2 - dx * 0.5;
+    const ctrl2Y = y2;
+    return `M ${x1} ${y1} C ${ctrl1X} ${ctrl1Y}, ${ctrl2X} ${ctrl2Y}, ${x2} ${y2}`;
   }
 
   function autoLayoutNodes() {
@@ -242,6 +296,54 @@
     nodes.forEach((n) => saveNodePosition(n));
   }
 
+  // ── Wiring Mechanics ───────────────────────────────────────
+  async function completeWiring(targetNodeId) {
+    if (!wiringStartNodeId || wiringStartNodeId === targetNodeId) return;
+    
+    // Check if edge already exists
+    if (edges.some(e => e.source_id === wiringStartNodeId && e.target_id === targetNodeId)) return;
+
+    setSaveStatus("saving");
+    const { data: edge, error } = await client
+      .from("zg_workspace_edges")
+      .insert({
+        workspace_id: workspace.id,
+        source_id: wiringStartNodeId,
+        target_id: targetNodeId
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error("Error creating connection:", error);
+      setSaveStatus("error");
+      return;
+    }
+
+    edges.push(edge);
+    setSaveStatus("saved");
+    renderConnections();
+  }
+
+  async function deleteEdge(edgeId) {
+    if (!confirm("Remove this connection?")) return;
+    setSaveStatus("saving");
+    const { error } = await client
+      .from("zg_workspace_edges")
+      .delete()
+      .eq("id", edgeId);
+
+    if (error) {
+      alert("Error removing connection: " + error.message);
+      setSaveStatus("error");
+      return;
+    }
+    
+    edges = edges.filter(e => e.id !== edgeId);
+    renderConnections();
+    setSaveStatus("saved");
+  }
+
   // ── Drag Engine ────────────────────────────────────────────
   function setupDrag(el, node) {
     let isDragging = false;
@@ -250,6 +352,7 @@
 
     el.addEventListener("mousedown", (e) => {
       if (e.button !== 0) return;
+      if (e.target.classList.contains("ws-node-port")) return; // Let port handler catch it
       e.stopPropagation();
       e.preventDefault();
       isDragging = true;
@@ -280,7 +383,6 @@
       document.body.style.cursor = "";
       if (hasMoved) {
         saveNodePosition(node);
-        // Prevent click from firing
         setTimeout(() => el.classList.remove("is-dragging"), 50);
       } else {
         el.classList.remove("is-dragging");
@@ -291,26 +393,71 @@
     document.addEventListener("mouseup", onUp);
   }
 
-  // ── Pan + Zoom ─────────────────────────────────────────────
+  // ── Pan + Zoom + Global Wiring ─────────────────────────────
   function setupEventListeners() {
-    // Pan canvas
+    // Canvas Pan & Wiring Move
     containerEl.addEventListener("mousedown", (e) => {
       if (e.target === containerEl || e.target === svgEl) {
         isPanning = true;
         panStart = { x: e.clientX - panX, y: e.clientY - panY };
         containerEl.style.cursor = "grabbing";
       }
+
+      // Check if mousedown is on a port
+      if (e.target.classList.contains("ws-node-port")) {
+        e.stopPropagation();
+        const nodeEl = e.target.closest(".ws-node-child");
+        if (nodeEl) {
+          isWiring = true;
+          wiringStartNodeId = nodeEl.dataset.nodeId;
+          wiringStartPort = e.target.dataset.port;
+          document.body.style.cursor = "crosshair";
+          // Initial coordinate
+          const rect = containerEl.getBoundingClientRect();
+          wiringCurrentX = (e.clientX - rect.left - panX) / zoom;
+          wiringCurrentY = (e.clientY - rect.top - panY) / zoom;
+          renderConnections();
+        }
+      }
     });
+
     document.addEventListener("mousemove", (e) => {
-      if (!isPanning) return;
-      panX = e.clientX - panStart.x;
-      panY = e.clientY - panStart.y;
-      nodesLayerEl.style.transform = getTransform();
-      svgEl.style.transform = getTransform();
+      if (isPanning) {
+        panX = e.clientX - panStart.x;
+        panY = e.clientY - panStart.y;
+        nodesLayerEl.style.transform = getTransform();
+        svgEl.style.transform = getTransform();
+      }
+
+      if (isWiring) {
+        const rect = containerEl.getBoundingClientRect();
+        wiringCurrentX = (e.clientX - rect.left - panX) / zoom;
+        wiringCurrentY = (e.clientY - rect.top - panY) / zoom;
+        renderConnections();
+      }
     });
-    document.addEventListener("mouseup", () => {
+
+    document.addEventListener("mouseup", async (e) => {
       isPanning = false;
       containerEl.style.cursor = "";
+
+      if (isWiring) {
+        isWiring = false;
+        document.body.style.cursor = "";
+        
+        // Check if dropped on another port or node
+        const dropPort = e.target.closest(".ws-node-port");
+        const dropNode = e.target.closest(".ws-node-child");
+        
+        if (dropNode) {
+          const targetNodeId = dropNode.dataset.nodeId;
+          await completeWiring(targetNodeId);
+        }
+        
+        wiringStartNodeId = null;
+        wiringStartPort = null;
+        renderConnections();
+      }
     });
 
     // Scroll zoom
@@ -610,22 +757,34 @@
   async function uploadFile(file, node) {
     setSaveStatus("uploading");
 
-    // Store as base64 data URL (works without Storage bucket)
-    const reader = new FileReader();
-    reader.onload = async () => {
-      node.content = reader.result;
-      await saveNodeField(node, "content", node.content);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${workspace.id}/${node.id}_${Date.now()}.${fileExt}`;
+
+      const { data, error } = await client.storage
+        .from('workspace-files')
+        .upload(fileName, file, { upsert: true });
+
+      if (error) {
+        throw error;
+      }
+
+      const { data: publicUrlData } = client.storage
+        .from('workspace-files')
+        .getPublicUrl(fileName);
+
+      node.file_url = publicUrlData.publicUrl;
+      await saveNodeField(node, "file_url", node.file_url);
+
       openEditor(node);
       setSaveStatus("saved");
-    };
-    reader.onerror = () => {
+    } catch (err) {
+      console.error("Upload error:", err);
       setSaveStatus("error");
-      alert("Failed to read file");
-    };
-    reader.readAsDataURL(file);
+      alert("Failed to upload file to database storage.");
+    }
   }
 
-  // ── Delete Node ────────────────────────────────────────────
   async function handleDeleteNode() {
     if (!activeEditorNode) return;
     if (!confirm(`Delete "${activeEditorNode.label}"? This cannot be undone.`)) return;
@@ -642,7 +801,10 @@
       return;
     }
 
+    // Cascade delete locally
+    edges = edges.filter(e => e.source_id !== activeEditorNode.id && e.target_id !== activeEditorNode.id);
     nodes = nodes.filter(n => n.id !== activeEditorNode.id);
+    
     closeEditor();
     renderAll();
     setSaveStatus("saved");

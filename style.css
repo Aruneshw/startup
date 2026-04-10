@@ -3724,6 +3724,31 @@ body.modal-open { overflow: hidden; }
 }
 
 /* Type-specific node colors */
+.ws-node-port {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  background: var(--surface-2);
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  cursor: crosshair;
+  z-index: 10;
+  transition: all 150ms;
+}
+.ws-node-port:hover,
+.ws-node-port.is-active {
+  background: var(--accent-cyan);
+  border-color: #fff;
+  transform: scale(1.2) translateY(-50%);
+}
+.ws-node-port-left { left: -8px; top: 50%; transform: translateY(-50%); }
+.ws-node-port-right { right: -8px; top: 50%; transform: translateY(-50%); }
+.ws-node-port-top { top: -8px; left: 50%; transform: translateX(-50%); }
+.ws-node-port-top:hover, .ws-node-port-top.is-active { transform: scale(1.2) translateX(-50%); }
+.ws-node-port-bottom { bottom: -8px; left: 50%; transform: translateX(-50%); }
+.ws-node-port-bottom:hover, .ws-node-port-bottom.is-active { transform: scale(1.2) translateX(-50%); }
+
+/* Type-specific node colors */
 .ws-node-type-code { border-left: 3px solid #38bdf8; }
 .ws-node-type-text { border-left: 3px solid #a78bfa; }
 .ws-node-type-image { border-left: 3px solid #f97316; }
